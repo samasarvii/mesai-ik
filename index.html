@@ -1,0 +1,1816 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesai İK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    color-scheme: light;
+    --bg:            #f3f5f9;
+    --surface:       #ffffff;
+    --surface-2:     #eef1f6;
+    --ink:           #151b26;
+    --ink-2:         #495364;
+    --muted:         #7d8698;
+    --line:          #e2e6ee;
+    --line-soft:     #eceff5;
+    --accent:        #1d4f9c;
+    --accent-strong: #163c77;
+    --accent-soft:   #e7eefb;
+    --accent-ink:    #ffffff;
+    --good:          #0ca30c;
+    --good-text:     #006300;
+    --warn:          #fab219;
+    --warn-text:     #7a5200;
+    --serious:       #ec835a;
+    --serious-text:  #8a3d1c;
+    --crit:          #d03b3b;
+    --crit-text:     #a32020;
+    --s1:            #2a78d6;
+    --s2:            #eb6834;
+    --s3:            #1baf7a;
+    --grid:          #e4e7ed;
+    --axis:          #c6ccd8;
+    --shadow:        0 1px 2px rgba(21,27,38,.05), 0 8px 24px rgba(21,27,38,.06);
+    --font-display:  'Bricolage Grotesque', 'IBM Plex Sans', system-ui, sans-serif;
+    --font-ui:       'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg:            #0d1117;
+      --surface:       #161c26;
+      --surface-2:     #1d2431;
+      --ink:           #eef2f8;
+      --ink-2:         #b4bdcc;
+      --muted:         #7f8a9d;
+      --line:          #262e3c;
+      --line-soft:     #1f2734;
+      --accent:        #5c93e8;
+      --accent-strong: #8db4f2;
+      --accent-soft:   #1b2b47;
+      --accent-ink:    #0d1117;
+      --good:          #0ca30c;
+      --good-text:     #34c759;
+      --warn:          #fab219;
+      --warn-text:     #ffc94d;
+      --serious:       #ec835a;
+      --serious-text:  #f3a281;
+      --crit:          #d03b3b;
+      --crit-text:     #ef8080;
+      --s1:            #3987e5;
+      --s2:            #d95926;
+      --s3:            #199e70;
+      --grid:          #242c3a;
+      --axis:          #38414f;
+      --shadow:        0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:            #0d1117;
+    --surface:       #161c26;
+    --surface-2:     #1d2431;
+    --ink:           #eef2f8;
+    --ink-2:         #b4bdcc;
+    --muted:         #7f8a9d;
+    --line:          #262e3c;
+    --line-soft:     #1f2734;
+    --accent:        #5c93e8;
+    --accent-strong: #8db4f2;
+    --accent-soft:   #1b2b47;
+    --accent-ink:    #0d1117;
+    --good:          #0ca30c;
+    --good-text:     #34c759;
+    --warn:          #fab219;
+    --warn-text:     #ffc94d;
+    --serious:       #ec835a;
+    --serious-text:  #f3a281;
+    --crit:          #d03b3b;
+    --crit-text:     #ef8080;
+    --s1:            #3987e5;
+    --s2:            #d95926;
+    --s3:            #199e70;
+    --grid:          #242c3a;
+    --axis:          #38414f;
+    --shadow:        0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.25);
+  }
+
+  /* ---------- Base ---------- */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; font-size: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select { font-family: inherit; font-size: inherit; color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+
+  /* ---------- Shell ---------- */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 236px; flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    padding: 20px 14px 16px;
+    gap: 18px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 21px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .brand-sub { font-size: 11px; color: var(--muted); letter-spacing: .02em; }
+  .nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .nav-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .11em;
+    color: var(--muted); padding: 12px 10px 4px; font-weight: 700;
+  }
+  .nav-label:first-child { padding-top: 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    color: var(--ink-2); font-weight: 500; text-align: left; width: 100%;
+    transition: background .12s, color .12s;
+  }
+  .nav-item svg { flex-shrink: 0; opacity: .75; }
+  .nav-item:hover { background: var(--surface-2); color: var(--ink); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+  .nav-item.active svg { opacity: 1; }
+  .nav-badge {
+    margin-left: auto; background: var(--crit); color: #fff;
+    font-size: 10.5px; font-weight: 700; border-radius: 999px;
+    min-width: 18px; text-align: center; padding: 1px 6px;
+  }
+  .side-user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px; border-radius: 10px; background: var(--surface-2);
+  }
+  .side-user .avatar { width: 32px; height: 32px; font-size: 12px; }
+  .side-user b { display: block; font-size: 13px; }
+  .side-user span { font-size: 11.5px; color: var(--muted); }
+  .side-version { text-align: center; font-size: 10.5px; color: var(--muted); letter-spacing: .04em; }
+
+  .main { flex: 1; min-width: 0; padding: 24px 28px 48px; }
+  .topbar {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .eyebrow {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--muted); font-weight: 700; margin-bottom: 3px;
+  }
+  .topbar h1 {
+    font-family: var(--font-display);
+    font-size: 24px; font-weight: 600; letter-spacing: -0.02em;
+    margin: 0; text-wrap: balance;
+  }
+  .topbar p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .today-chip {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 999px; padding: 7px 14px; font-size: 13px;
+    color: var(--ink-2); font-weight: 500; white-space: nowrap;
+  }
+  .bell-wrap { position: relative; }
+  .icon-btn {
+    width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); display: grid; place-items: center; color: var(--ink-2);
+    transition: background .12s;
+  }
+  .icon-btn:hover { background: var(--surface-2); }
+  .badge-dot {
+    position: absolute; top: -5px; right: -5px;
+    background: var(--crit); color: #fff; font-size: 10px; font-weight: 700;
+    min-width: 17px; height: 17px; border-radius: 999px;
+    display: grid; place-items: center; padding: 0 4px;
+  }
+  .popover {
+    position: absolute; right: 0; top: 46px; width: 320px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; box-shadow: var(--shadow); padding: 8px;
+    display: none; z-index: 90;
+  }
+  .popover.show { display: block; }
+  .pop-title { font-size: 11px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); font-weight: 700; padding: 6px 10px 4px; }
+  .pop-item {
+    display: flex; gap: 10px; padding: 9px 10px; border-radius: 8px;
+    font-size: 13px; color: var(--ink-2); align-items: flex-start; width: 100%; text-align: left;
+  }
+  .pop-item:hover { background: var(--surface-2); }
+  .pop-item b { color: var(--ink); font-weight: 600; }
+  .pop-item .p-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+  /* ---------- Cards & grids ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: var(--shadow);
+  }
+  .card-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; padding: 16px 18px 0; flex-wrap: wrap;
+  }
+  .card-head h2 {
+    font-family: var(--font-display);
+    font-size: 15.5px; font-weight: 600; margin: 0; letter-spacing: -0.01em;
+  }
+  .card-head .hint { font-size: 12px; color: var(--muted); }
+  .card-body { padding: 14px 18px 18px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+  .kpi { padding: 16px 18px; }
+  .kpi .k-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--muted); font-weight: 600;
+  }
+  .kpi .k-value { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 4px; line-height: 1.15; }
+  .kpi .k-value.sm { font-size: 21px; }
+  .kpi .k-delta { font-size: 12px; margin-top: 4px; color: var(--muted); }
+  .k-delta .up   { color: var(--good-text); font-weight: 600; }
+  .k-delta .down { color: var(--crit-text); font-weight: 600; }
+
+  .grid-2 { display: grid; grid-template-columns: 1.55fr 1fr; gap: 14px; margin-bottom: 16px; align-items: start; }
+  .grid-2b { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; margin-bottom: 16px; }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; }
+  table.wide { min-width: 860px; }
+  th {
+    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--muted); font-weight: 600; padding: 10px 12px;
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  td {
+    padding: 10px 12px; border-bottom: 1px solid var(--line-soft);
+    font-size: 13.5px; vertical-align: middle; white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .1s; }
+  tbody tr:hover { background: var(--surface-2); }
+  tr.clickable { cursor: pointer; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.strong { font-weight: 600; }
+  td.mono { font-variant-numeric: tabular-nums; }
+  tfoot td { border-top: 1px solid var(--line); border-bottom: none; font-weight: 600; }
+
+  .emp-cell { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent-strong);
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 700; letter-spacing: .02em; flex-shrink: 0;
+  }
+  .emp-cell .sub { font-size: 11.5px; color: var(--muted); }
+
+  /* ---------- Pills ---------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; padding: 3px 10px 3px 8px;
+    border-radius: 999px; white-space: nowrap;
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .pill-good    { background: color-mix(in srgb, var(--good) 13%, transparent);   color: var(--good-text); }
+  .pill-good .dot { background: var(--good); }
+  .pill-warn    { background: color-mix(in srgb, var(--warn) 16%, transparent);   color: var(--warn-text); }
+  .pill-warn .dot { background: var(--warn); }
+  .pill-serious { background: color-mix(in srgb, var(--serious) 16%, transparent);color: var(--serious-text); }
+  .pill-serious .dot { background: var(--serious); }
+  .pill-crit    { background: color-mix(in srgb, var(--crit) 13%, transparent);   color: var(--crit-text); }
+  .pill-crit .dot { background: var(--crit); }
+  .pill-info    { background: var(--accent-soft); color: var(--accent-strong); }
+  .pill-info .dot { background: var(--accent); }
+  .pill-neutral { background: var(--surface-2); color: var(--ink-2); }
+  .pill-neutral .dot { background: var(--muted); }
+
+  /* ---------- Controls ---------- */
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 9px; padding: 8px 12px; min-width: 240px; flex: 1; max-width: 340px;
+  }
+  .search input { border: none; background: none; outline: none; width: 100%; font-size: 13.5px; }
+  .search svg { color: var(--muted); flex-shrink: 0; }
+  select.ctl, input.ctl {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 9px; padding: 8px 12px; font-size: 13.5px;
+  }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-weight: 500;
+    color: var(--ink-2); transition: background .12s, color .12s, border-color .12s;
+  }
+  .chip:hover { background: var(--surface-2); }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .btn {
+    border-radius: 8px; padding: 6px 13px; font-size: 12.5px; font-weight: 600;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    transition: filter .12s, background .12s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn-approve { background: var(--good-text); border-color: transparent; color: #fff; }
+  .btn-approve:hover { background: var(--good-text); filter: brightness(1.12); }
+  .btn-reject  { background: transparent; color: var(--crit-text); border-color: color-mix(in srgb, var(--crit) 40%, transparent); }
+  .btn-reject:hover { background: color-mix(in srgb, var(--crit) 10%, transparent); }
+
+  /* ---------- Charts ---------- */
+  .chart-wrap { position: relative; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 4px 0 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .tooltip {
+    position: absolute; pointer-events: none; z-index: 30;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; box-shadow: var(--shadow);
+    padding: 9px 12px; font-size: 12.5px; min-width: 150px;
+    opacity: 0; transition: opacity .1s;
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip .tt-title { font-weight: 600; margin-bottom: 5px; }
+  .tooltip .tt-row { display: flex; align-items: center; gap: 7px; justify-content: space-between; padding: 1.5px 0; color: var(--ink-2); }
+  .tooltip .tt-row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .tooltip .tt-key { display: inline-flex; align-items: center; gap: 7px; }
+  .tooltip .tt-key i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+
+  .hbar-row { display: grid; grid-template-columns: 120px 1fr 40px; align-items: center; gap: 10px; padding: 5px 0; }
+  .hbar-row .hb-label { font-size: 12.5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hbar-track { height: 16px; border-radius: 4px; background: transparent; position: relative; }
+  .hbar-fill { height: 100%; border-radius: 4px; background: var(--s1); min-width: 3px; }
+  .hbar-row .hb-val { font-size: 12.5px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Lists ---------- */
+  .row-list { display: flex; flex-direction: column; }
+  .row-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .row-item:last-child { border-bottom: none; }
+  .row-item .r-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .row-item .r-text b { display: block; font-size: 13.5px; font-weight: 600; }
+  .row-item .r-text span { font-size: 12px; color: var(--muted); }
+  .row-item .r-time { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .row-item.past { opacity: .5; }
+  .empty-note { color: var(--muted); font-size: 13px; padding: 12px 0; }
+
+  .progress { height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .progress i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+  .progress i.p-good { background: var(--good); }
+  .progress i.p-warn { background: var(--warn); }
+
+  .ann-cat { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-strong); background: var(--accent-soft); border-radius: 5px; padding: 2px 7px; }
+  .ann-body { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; white-space: normal; line-height: 1.45; }
+
+  /* ---------- Views ---------- */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---------- Tabs ---------- */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin: 18px 0 14px; overflow-x: auto; }
+  .tab {
+    padding: 8px 13px; font-size: 13px; font-weight: 600; color: var(--muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--accent-strong); border-bottom-color: var(--accent); }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(10, 14, 22, .45);
+    display: none; align-items: flex-start; justify-content: center;
+    padding: 5vh 16px; z-index: 100; overflow-y: auto;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 16px; box-shadow: var(--shadow);
+    width: 100%; max-width: 640px; padding: 24px;
+  }
+  .modal-head { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .modal-head .avatar { width: 52px; height: 52px; font-size: 17px; }
+  .modal-head h3 { font-family: var(--font-display); font-size: 19px; margin: 0; letter-spacing: -0.01em; }
+  .modal-head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .modal-close { margin-left: auto; color: var(--muted); font-size: 22px; line-height: 1; padding: 4px 8px; border-radius: 8px; }
+  .modal-close:hover { background: var(--surface-2); color: var(--ink); }
+  .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin: 14px 0; }
+  .fact { padding: 10px 12px; background: var(--surface-2); border-radius: 10px; }
+  .fact .f-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .fact .f-value { font-size: 14px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .modal h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 18px 0 8px; }
+  .modal table { min-width: 0; }
+  .payslip-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+  .payslip-row:last-child { border-bottom: none; }
+  .payslip-row .neg { color: var(--crit-text); }
+  .payslip-row b { font-variant-numeric: tabular-nums; }
+  .payslip-total { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .payslip-total b { font-size: 18px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    background: var(--ink); color: var(--bg);
+    padding: 11px 18px; border-radius: 10px; font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow); opacity: 0; transform: translateY(8px);
+    transition: opacity .2s, transform .2s; pointer-events: none; max-width: 320px;
+  }
+  .toast.show { opacity: 1; transform: none; }
+
+  .foot-note { margin-top: 28px; text-align: center; color: var(--muted); font-size: 12px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1080px) {
+    .grid-2, .grid-2b { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 920px) {
+    .app { flex-direction: column; }
+    .sidebar {
+      width: 100%; height: auto; position: static;
+      flex-direction: row; align-items: center; padding: 12px 16px; gap: 14px;
+      border-right: none; border-bottom: 1px solid var(--line); overflow: visible;
+    }
+    .brand-sub, .side-user, .nav-label, .side-version { display: none; }
+    .nav { flex-direction: row; overflow-x: auto; gap: 4px; }
+    .nav-item { white-space: nowrap; padding: 7px 11px; width: auto; }
+    .nav-item svg { display: none; }
+    .main { padding: 18px 16px 40px; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Mesai</div>
+        <div class="brand-sub">Poyraz Yazılım A.Ş.</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-label">Genel</div>
+      <button class="nav-item active" data-view="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/></svg>
+        Genel Bakış
+      </button>
+      <button class="nav-item" data-view="employees">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.4 1.6 5 4.4"/></svg>
+        Çalışanlar
+      </button>
+      <div class="nav-label">Operasyon</div>
+      <button class="nav-item" data-view="pdks">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        Giriş – Çıkış
+      </button>
+      <button class="nav-item" data-view="leaves">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M8 2.5V7M16 2.5V7M3.5 10.5h17"/><path d="M9 15.5l2 2 4-4"/></svg>
+        İzinler <span class="nav-badge" id="badge-leaves" hidden></span>
+      </button>
+      <button class="nav-item" data-view="assets">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8 20.5h8M12 16.5v4"/></svg>
+        Zimmet
+      </button>
+      <button class="nav-item" data-view="perf">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>
+        Performans
+      </button>
+      <div class="nav-label">Finans</div>
+      <button class="nav-item" data-view="payroll">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2c-.6-.9-1.6-1.4-2.8-1.4-1.9 0-3.4 1.9-3.4 4.2s1.5 4.2 3.4 4.2c1.2 0 2.2-.5 2.8-1.4M7 11h5M7 13.5h5"/></svg>
+        Bordro
+      </button>
+      <button class="nav-item" data-view="sodexo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19"/><path d="M6 15h5"/></svg>
+        Sodexo
+      </button>
+      <button class="nav-item" data-view="expenses">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h9l4 4v15H6z"/><path d="M14.5 2.5V7H19M9 12h6M9 15.5h6"/></svg>
+        Masraflar <span class="nav-badge" id="badge-exp" hidden></span>
+      </button>
+    </nav>
+    <div class="side-user">
+      <div class="avatar">PE</div>
+      <div>
+        <b>Pelin Erbaş</b>
+        <span>İK Müdürü · Yönetici</span>
+      </div>
+    </div>
+    <div class="side-version">Mesai İK Paketi · v2.4.1</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">Poyraz Yazılım A.Ş. · İnsan Kaynakları</div>
+        <h1 id="page-title">Genel Bakış</h1>
+        <p id="page-sub"></p>
+      </div>
+      <div class="topbar-right">
+        <div class="bell-wrap">
+          <button class="icon-btn" id="bell-btn" aria-label="Bildirimler">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></svg>
+            <span class="badge-dot" id="bell-badge" hidden></span>
+          </button>
+          <div class="popover" id="bell-pop"></div>
+        </div>
+        <div class="today-chip" id="today-chip"></div>
+      </div>
+    </div>
+
+    <section class="view active" id="view-dashboard"></section>
+    <section class="view" id="view-employees"></section>
+    <section class="view" id="view-pdks"></section>
+    <section class="view" id="view-leaves"></section>
+    <section class="view" id="view-assets"></section>
+    <section class="view" id="view-perf"></section>
+    <section class="view" id="view-payroll"></section>
+    <section class="view" id="view-sodexo"></section>
+    <section class="view" id="view-expenses"></section>
+
+    <p class="foot-note">Mesai İK v2.4.1 · Tüm veriler örnektir (dummy data) · Poyraz Yazılım A.Ş. kurgusal bir şirkettir</p>
+  </main>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =========================================================
+   Yardımcılar — deterministik sözde rastgelelik (seed'li)
+   ========================================================= */
+function hash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rnd(key) { return (hash(key) % 10000) / 10000; }
+function pick(key, arr) { return arr[hash(key) % arr.length]; }
+function pad(n) { return String(n).padStart(2, '0'); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function isWorkday(d) { const g = d.getDay(); return g !== 0 && g !== 6; }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function prevWorkday(d) { let x = addDays(d, -1); while (!isWorkday(x)) x = addDays(x, -1); return x; }
+function lastWorkdays(n, from) {
+  const out = []; let d = new Date(from);
+  while (!isWorkday(d)) d = addDays(d, -1);
+  while (out.length < n) { out.unshift(new Date(d)); d = prevWorkday(d); }
+  return out;
+}
+const REF_DAY = isWorkday(TODAY) ? TODAY : prevWorkday(TODAY);
+
+const fmtMoney = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 });
+function fmtDate(d) { return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }); }
+function fmtDateShort(d) { return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }); }
+function fmtDateWd(d) { return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' }); }
+function fmtMonth(d) { return d.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }); }
+function relDay(d) {
+  const diff = Math.round((TODAY - d) / 864e5);
+  if (diff <= 0) return 'bugün';
+  if (diff === 1) return 'dün';
+  return diff + ' gün önce';
+}
+function minToClock(m) { const t = 8 * 60 + m; return pad(Math.floor(t / 60)) + ':' + pad(t % 60); }
+function durText(mins) { return Math.floor(mins / 60) + ' sa ' + pad(mins % 60) + ' dk'; }
+
+/* =========================================================
+   Dummy veri — 28 çalışan
+   ========================================================= */
+const DEPTS = ['Yazılım', 'Satış', 'Pazarlama', 'Finans', 'İnsan Kaynakları', 'Operasyon'];
+const RAW = [
+  ['Elif Kaya', 'Yazılım', 'Kıdemli Geliştirici'],
+  ['Mert Aydın', 'Yazılım', 'Backend Geliştirici'],
+  ['Zeynep Demir', 'Yazılım', 'Frontend Geliştirici'],
+  ['Emre Şahin', 'Yazılım', 'DevOps Mühendisi'],
+  ['Selin Çelik', 'Yazılım', 'QA Uzmanı'],
+  ['Burak Yıldız', 'Yazılım', 'Mobil Geliştirici'],
+  ['Deniz Arslan', 'Yazılım', 'Veri Mühendisi'],
+  ['Gizem Doğan', 'Yazılım', 'UI/UX Tasarımcısı'],
+  ['Kaan Öztürk', 'Yazılım', 'Yazılım Takım Lideri'],
+  ['Merve Kılıç', 'Satış', 'Satış Müdürü'],
+  ['Onur Aksoy', 'Satış', 'Satış Temsilcisi'],
+  ['Büşra Koç', 'Satış', 'Satış Temsilcisi'],
+  ['Tolga Erdoğan', 'Satış', 'Kurumsal Satış Uzmanı'],
+  ['Ece Güneş', 'Satış', 'Satış Operasyon Uzmanı'],
+  ['Cem Polat', 'Pazarlama', 'Pazarlama Müdürü'],
+  ['İrem Özdemir', 'Pazarlama', 'İçerik Uzmanı'],
+  ['Serkan Avcı', 'Pazarlama', 'Dijital Pazarlama Uzmanı'],
+  ['Aslı Turan', 'Pazarlama', 'Grafik Tasarımcı'],
+  ['Hakan Çetin', 'Finans', 'Finans Müdürü'],
+  ['Nazlı Yalçın', 'Finans', 'Muhasebe Uzmanı'],
+  ['Umut Karaca', 'Finans', 'Finans Analisti'],
+  ['Pelin Erbaş', 'İnsan Kaynakları', 'İK Müdürü'],
+  ['Barış Tekin', 'İnsan Kaynakları', 'İK Uzmanı'],
+  ['Damla Sezer', 'İnsan Kaynakları', 'İşe Alım Uzmanı'],
+  ['Furkan Bozkurt', 'Operasyon', 'Operasyon Müdürü'],
+  ['Yasemin Ateş', 'Operasyon', 'Ofis Yöneticisi'],
+  ['Halil Kurt', 'Operasyon', 'Satın Alma Uzmanı'],
+  ['Sude Aslan', 'Operasyon', 'Destek Uzmanı'],
+];
+const BANKS = ['Garanti BBVA', 'İş Bankası', 'Yapı Kredi', 'Akbank', 'Ziraat Bankası'];
+const LOCATIONS = ['İstanbul Merkez', 'İstanbul Merkez', 'İstanbul Merkez', 'İstanbul Merkez', 'İstanbul Merkez', 'İstanbul Merkez', 'İstanbul Merkez', 'Ankara Ofis', 'Ankara Ofis', 'İzmir Ofis'];
+const WORK_MODES = ['Ofis', 'Ofis', 'Hibrit', 'Hibrit', 'Hibrit', 'Tam Uzaktan'];
+const TR_MAP = { 'ı':'i','İ':'I','ş':'s','Ş':'S','ğ':'g','Ğ':'G','ü':'u','Ü':'U','ö':'o','Ö':'O','ç':'c','Ç':'C' };
+function slugTr(s) { return s.replace(/[ıİşŞğĞüÜöÖçÇ]/g, c => TR_MAP[c]).toLowerCase().replace(/\s+/g, '.'); }
+
+function salaryFor(id, title) {
+  const r = rnd('sal' + id);
+  if (title.includes('Müdür')) return 135000 + Math.round(r * 45000 / 1000) * 1000;
+  if (title.includes('Lider') || title.includes('Kıdemli')) return 105000 + Math.round(r * 30000 / 1000) * 1000;
+  if (title.includes('Geliştirici') || title.includes('Mühendis')) return 82000 + Math.round(r * 32000 / 1000) * 1000;
+  if (title.includes('Temsilci') || title.includes('Destek')) return 48000 + Math.round(r * 14000 / 1000) * 1000;
+  return 58000 + Math.round(r * 26000 / 1000) * 1000;
+}
+const EMPLOYEES = RAW.map((e, i) => {
+  const id = i + 1;
+  const [name, dept, title] = e;
+  const hireYear = 2017 + hash('hy' + id) % 9;             // 2017–2025
+  const hireMonth = 1 + hash('hm' + id) % 12;
+  const hireDay = 1 + hash('hd' + id) % 28;
+  const hire = new Date(hireYear, hireMonth - 1, hireDay);
+  const seniority = Math.max(0, Math.floor((TODAY - hire) / (365.25 * 864e5)));
+  const entitlement = seniority >= 15 ? 26 : seniority >= 5 ? 20 : 14;
+  const usedLeave = Math.min(entitlement - 1, Math.floor(rnd('ul' + id) * entitlement * 0.85));
+  const bMonth = 1 + hash('bm' + id) % 12;
+  const bDay = 1 + hash('bd' + id) % 28;
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase();
+  return {
+    id, name, dept, title, hire, seniority, entitlement, usedLeave,
+    remaining: entitlement - usedLeave,
+    sicil: 'PY-' + String(1000 + id * 7 + hash('s' + id) % 90),
+    email: slugTr(name) + '@poyrazyazilim.com',
+    phone: '+90 5' + (30 + hash('ph' + id) % 15) + ' ' + (100 + hash('p2' + id) % 900) + ' ' + pad(hash('p3' + id) % 100) + ' ' + pad(hash('p4' + id) % 100),
+    salary: salaryFor(id, title),
+    mealDaily: 260,
+    bank: pick('bk' + id, BANKS),
+    iban: 'TR' + (10 + hash('ib' + id) % 90) + ' **** **** ' + (1000 + hash('ib2' + id) % 9000),
+    card: '5309 **** **** ' + (1000 + hash('cd' + id) % 9000),
+    birthday: { month: bMonth, day: bDay },
+    initials: initials.slice(0, 2),
+    location: pick('loc' + id, LOCATIONS),
+    workMode: title.includes('Müdür') ? 'Ofis' : pick('wm' + id, WORK_MODES),
+    sgkNo: '2' + String(1000000000 + hash('sgk' + id) % 900000000).slice(0, 9),
+  };
+});
+function managerOf(e) {
+  if (e.title.includes('Müdür') || e.title.includes('Lider')) return 'Ayhan Poyraz (Genel Müdür)';
+  const mgr = EMPLOYEES.find(x => x.dept === e.dept && (x.title.includes('Müdür') || x.title.includes('Lider')));
+  return mgr ? mgr.name : 'Ayhan Poyraz (Genel Müdür)';
+}
+
+/* ---------- Bordro hesabı (demo oranları) ---------- */
+function grossOf(e) { return Math.round(e.salary / 0.67241); }
+function payslipOf(e) {
+  const brut = grossOf(e);
+  const sgk = Math.round(brut * 0.14);
+  const issizlik = Math.round(brut * 0.01);
+  const matrah = brut - sgk - issizlik;
+  const gv = Math.round(matrah * 0.20);
+  const damga = Math.round(brut * 0.00759);
+  const net = brut - sgk - issizlik - gv - damga;
+  const isverenSgk = Math.round(brut * 0.1575);
+  const isverenIssizlik = Math.round(brut * 0.02);
+  return { brut, sgk, issizlik, gv, damga, net, isverenSgk, isverenIssizlik, cost: brut + isverenSgk + isverenIssizlik };
+}
+const TOTAL_COST = EMPLOYEES.reduce((s, e) => s + payslipOf(e).cost, 0);
+
+/* ---------- PDKS: (çalışan, gün) → deterministik kayıt ---------- */
+function attendanceFor(emp, date) {
+  const key = emp.id + '|' + iso(date);
+  const r = rnd('st' + key);
+  if (r < 0.045) return { status: 'izinli' };
+  if (r < 0.07) return { status: 'raporlu' };
+  const remoteP = emp.workMode === 'Tam Uzaktan' ? 0.85 : emp.workMode === 'Hibrit' ? 0.35 : 0.05;
+  const remote = rnd('rm' + key) < remoteP;
+  const punct = rnd('punct' + emp.id);                       // kişiye özgü dakiklik
+  const inMin = 15 + Math.floor(punct * 30 + rnd('in' + key) * 45);   // 08:15 – 09:30
+  const outMin = 565 + Math.floor(rnd('out' + key) * 110);            // 17:25 – 19:15
+  const late = inMin > 75;                                   // 09:15 sonrası
+  const mins = outMin - inMin;
+  return {
+    status: remote ? 'uzaktan' : (late ? 'gec' : 'ofiste'),
+    checkIn: inMin, checkOut: outMin, mins,
+    overtime: Math.max(0, mins - 540),                       // 9 saati aşan kısım
+  };
+}
+const ATT_META = {
+  ofiste:  { label: 'Ofiste',    pill: 'pill-good' },
+  gec:     { label: 'Geç Geldi', pill: 'pill-warn' },
+  uzaktan: { label: 'Uzaktan',   pill: 'pill-info' },
+  izinli:  { label: 'İzinli',    pill: 'pill-neutral' },
+  raporlu: { label: 'Raporlu',   pill: 'pill-serious' },
+};
+function dayCounts(date) {
+  const c = { ofis: 0, gec: 0, uzaktan: 0, izinli: 0, raporlu: 0 };
+  EMPLOYEES.forEach(e => {
+    const a = attendanceFor(e, date);
+    if (a.status === 'ofiste') c.ofis++;
+    else if (a.status === 'gec') { c.ofis++; c.gec++; }
+    else if (a.status === 'uzaktan') c.uzaktan++;
+    else if (a.status === 'izinli') c.izinli++;
+    else c.raporlu++;
+  });
+  return c;
+}
+
+/* ---------- İzin talepleri ---------- */
+const LEAVE_TYPES = ['Yıllık İzin', 'Yıllık İzin', 'Yıllık İzin', 'Mazeret İzni', 'Raporlu', 'Babalık İzni'];
+const LEAVES = [];
+for (let i = 0; i < 16; i++) {
+  const emp = EMPLOYEES[(i * 5 + 3) % EMPLOYEES.length];
+  const offset = Math.floor(rnd('lo' + i) * 50) - 22;        // -22 … +27 gün
+  const len = 1 + hash('ll' + i) % 7;
+  const start = addDays(TODAY, offset);
+  const end = addDays(start, len - 1);
+  const type = pick('lt' + i, LEAVE_TYPES);
+  let status;
+  if (offset > 2) status = rnd('ls' + i) < 0.55 ? 'Bekliyor' : (rnd('ls2' + i) < 0.85 ? 'Onaylandı' : 'Reddedildi');
+  else status = rnd('ls3' + i) < 0.9 ? 'Onaylandı' : 'Reddedildi';
+  LEAVES.push({ id: i + 1, emp, type, start, end, days: len, status });
+}
+LEAVES.sort((a, b) => b.start - a.start);
+const LEAVE_PILL = { 'Onaylandı': 'pill-good', 'Bekliyor': 'pill-warn', 'Reddedildi': 'pill-crit' };
+
+/* ---------- Zimmet ---------- */
+const LAPTOPS = ['MacBook Pro 14"', 'ThinkPad T14 Gen 5', 'Dell Latitude 5440', 'MacBook Air M3'];
+const PHONES = ['iPhone 15', 'iPhone 14', 'Samsung Galaxy S24'];
+const MONITORS = ['Dell UltraSharp 27"', 'LG 27UL550 27"', 'Samsung ViewFinity 27"'];
+const ACCS = ['Logitech MX Keys Klavye', 'Logitech MX Master 3 Mouse', 'Jabra Evolve2 Kulaklık', 'Dell WD19 Dock'];
+const ASSETS = [];
+let assetSeq = 1;
+EMPLOYEES.forEach(e => {
+  function add(type, model, prefix, k) {
+    const yr = Math.max(e.hire.getFullYear(), 2021 + hash('ay' + k) % 5);
+    const st = rnd('ast' + k);
+    const status = st < 0.90 ? 'Aktif' : st < 0.96 ? 'Arızalı' : 'İade Sürecinde';
+    ASSETS.push({
+      id: assetSeq++, emp: e, type, model,
+      serial: prefix + '-' + (10000 + hash('sn' + k) % 90000),
+      given: new Date(yr, hash('agm' + k) % 12, 1 + hash('agd' + k) % 28),
+      status,
+    });
+  }
+  add('Laptop', pick('lap' + e.id, LAPTOPS), 'PY-NB', 'l' + e.id);
+  if (rnd('hasph' + e.id) < 0.6) add('Telefon', pick('pho' + e.id, PHONES), 'PY-TEL', 'p' + e.id);
+  if (rnd('hasmo' + e.id) < 0.7) add('Monitör', pick('mon' + e.id, MONITORS), 'PY-MON', 'm' + e.id);
+  if (rnd('hasac' + e.id) < 0.45) add('Aksesuar', pick('acc' + e.id, ACCS), 'PY-AKS', 'a' + e.id);
+});
+const ASSET_PILL = { 'Aktif': 'pill-good', 'Arızalı': 'pill-serious', 'İade Sürecinde': 'pill-warn' };
+
+/* ---------- Performans (2026 H1 dönemi) ---------- */
+const PERF = EMPLOYEES.map(e => {
+  const score = Math.round((2.8 + rnd('pf' + e.id) * 2.1) * 10) / 10;   // 2,8 – 4,9
+  const goal = 55 + Math.round(rnd('pg' + e.id) * 45);                  // hedef tamamlama %
+  const training = 4 + hash('pt' + e.id) % 33;                          // eğitim saati
+  const band = score >= 4.3 ? 'Yüksek Performans' : score >= 3.5 ? 'Beklentiyi Karşılıyor' : 'Gelişim Alanı';
+  const bandPill = score >= 4.3 ? 'pill-good' : score >= 3.5 ? 'pill-info' : 'pill-warn';
+  return { emp: e, score, goal, training, band, bandPill };
+});
+
+/* ---------- Masraf talepleri ---------- */
+const EXP_CATS = {
+  'Yemek':              { min: 180, max: 950 },
+  'Ulaşım':             { min: 90, max: 1200 },
+  'Konaklama':          { min: 1800, max: 7500 },
+  'Eğitim':             { min: 1500, max: 9000 },
+  'Temsil & Ağırlama':  { min: 600, max: 4200 },
+  'Ofis Malzemesi':     { min: 150, max: 2500 },
+};
+const EXP_DESC = {
+  'Yemek': 'Müşteri toplantısı yemeği', 'Ulaşım': 'Şehir içi ulaşım / taksi',
+  'Konaklama': 'Ankara iş seyahati konaklaması', 'Eğitim': 'Online sertifika programı',
+  'Temsil & Ağırlama': 'Bayi ziyareti ikramı', 'Ofis Malzemesi': 'Ergonomik ekipman alımı',
+};
+const EXPENSES = [];
+for (let i = 0; i < 18; i++) {
+  const emp = EMPLOYEES[(i * 7 + 2) % EMPLOYEES.length];
+  const cat = pick('ec' + i, Object.keys(EXP_CATS));
+  const range = EXP_CATS[cat];
+  const amount = Math.round((range.min + rnd('ea' + i) * (range.max - range.min)) / 10) * 10;
+  const date = addDays(TODAY, -1 - hash('ed' + i) % 45);
+  const r = rnd('es' + i);
+  const status = r < 0.30 ? 'Bekliyor' : r < 0.62 ? 'Onaylandı' : r < 0.90 ? 'Ödendi' : 'Reddedildi';
+  EXPENSES.push({
+    id: i + 1, emp, cat, amount, date, status,
+    desc: EXP_DESC[cat], receipt: 'F-2026-' + (4000 + hash('er' + i) % 6000),
+  });
+}
+EXPENSES.sort((a, b) => b.date - a.date);
+const EXP_PILL = { 'Bekliyor': 'pill-warn', 'Onaylandı': 'pill-info', 'Ödendi': 'pill-good', 'Reddedildi': 'pill-crit' };
+
+/* ---------- Resmi tatiller 2026 ---------- */
+const HOLIDAYS = [
+  ['2026-01-01', 'Yılbaşı'],
+  ['2026-03-19', 'Ramazan Bayramı Arefesi (yarım gün)'],
+  ['2026-03-20', 'Ramazan Bayramı 1. Gün'],
+  ['2026-03-21', 'Ramazan Bayramı 2. Gün'],
+  ['2026-03-22', 'Ramazan Bayramı 3. Gün'],
+  ['2026-04-23', 'Ulusal Egemenlik ve Çocuk Bayramı'],
+  ['2026-05-01', 'Emek ve Dayanışma Günü'],
+  ['2026-05-19', 'Atatürk’ü Anma, Gençlik ve Spor Bayramı'],
+  ['2026-05-26', 'Kurban Bayramı Arefesi (yarım gün)'],
+  ['2026-05-27', 'Kurban Bayramı 1. Gün'],
+  ['2026-05-28', 'Kurban Bayramı 2. Gün'],
+  ['2026-05-29', 'Kurban Bayramı 3. Gün'],
+  ['2026-05-30', 'Kurban Bayramı 4. Gün'],
+  ['2026-07-15', 'Demokrasi ve Millî Birlik Günü'],
+  ['2026-08-30', 'Zafer Bayramı'],
+  ['2026-10-28', 'Cumhuriyet Bayramı Arefesi (yarım gün)'],
+  ['2026-10-29', 'Cumhuriyet Bayramı'],
+].map(h => ({ date: new Date(h[0] + 'T12:00:00'), name: h[1] }));
+
+/* ---------- Duyurular & aktivite akışı ---------- */
+const ANNOUNCEMENTS = [
+  { t: 'Q3 Performans Değerlendirme Takvimi', cat: 'İK', d: addDays(TODAY, -2),
+    body: 'Öz değerlendirme formları 1–12 Eylül, yönetici değerlendirmeleri 15–26 Eylül tarihleri arasında tamamlanacaktır.' },
+  { t: 'Tamamlayıcı Sağlık Sigortası Yenilendi', cat: 'Yan Haklar', d: addDays(TODAY, -6),
+    body: 'Poliçeler yeni dönem için yenilendi; eş ve çocuk ekletmek isteyenler ay sonuna kadar İK’ya başvurabilir.' },
+  { t: 'Şirket Pikniği — Polonezköy', cat: 'Etkinlik', d: addDays(TODAY, -9),
+    body: 'Geleneksel şirket pikniğimiz önümüzdeki ay ilk cumartesi yapılacaktır. Katılım formu e-posta ile iletildi.' },
+  { t: 'Ofis Kat Düzenlemesi', cat: 'Ofis', d: addDays(TODAY, -13),
+    body: 'Satış ve Pazarlama ekipleri 3. kata taşınacaktır. Kutulama için ofis yöneticisiyle iletişime geçiniz.' },
+];
+function buildActivity() {
+  const acts = [];
+  const thisMonth = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+  const pend = LEAVES.filter(l => l.status === 'Bekliyor')[0];
+  const pendE = EXPENSES.filter(x => x.status === 'Bekliyor')[0];
+  if (pendE) acts.push({ d: pendE.date, text: '<b>' + esc(pendE.emp.name) + '</b> masraf talebi oluşturdu — ' + pendE.cat + ', ' + fmtMoney.format(pendE.amount) });
+  if (pend) acts.push({ d: addDays(TODAY, -1), text: '<b>' + esc(pend.emp.name) + '</b> izin talebi oluşturdu — ' + pend.type + ', ' + pend.days + ' gün' });
+  acts.push({ d: addDays(TODAY, -1), text: '<b>Damla Sezer</b> “Kıdemli Backend Geliştirici” ilanını yayınladı' });
+  if (TODAY.getDate() >= 5) acts.push({ d: new Date(TODAY.getFullYear(), TODAY.getMonth(), 5), text: '<b>Sodexo</b> ' + fmtMonth(thisMonth) + ' yüklemesi tamamlandı — 28 kart' });
+  acts.push({ d: new Date(TODAY.getFullYear(), TODAY.getMonth(), 1), text: '<b>Bordro</b> ' + fmtMonth(thisMonth) + ' maaş ödemeleri gerçekleşti — 28 çalışan' });
+  acts.push({ d: addDays(TODAY, -4), text: '<b>Barış Tekin</b> işe giriş evraklarını SGK’ya bildirdi (yeni pozisyon hazırlığı)' });
+  return acts.sort((a, b) => b.d - a.d).slice(0, 6);
+}
+
+/* ---------- Ay yardımcıları (Sodexo & Bordro) ---------- */
+function monthList(n) {
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(new Date(TODAY.getFullYear(), TODAY.getMonth() - i, 1));
+  return out;
+}
+function workdaysInMonth(m) {
+  let c = 0; const d = new Date(m.getFullYear(), m.getMonth(), 1);
+  while (d.getMonth() === m.getMonth()) { if (isWorkday(d)) c++; d.setDate(d.getDate() + 1); }
+  return c;
+}
+function sodexoDate(m) { return new Date(m.getFullYear(), m.getMonth(), 5); }
+function payrollDate(m) { return new Date(m.getFullYear(), m.getMonth(), 1); }
+function sodexoTotal(m) { const wd = workdaysInMonth(m); return EMPLOYEES.reduce((s, e) => s + e.mealDaily * wd, 0); }
+
+/* =========================================================
+   Ortak parçalar
+   ========================================================= */
+function avatarHtml(emp) { return '<span class="avatar">' + emp.initials + '</span>'; }
+function empCell(emp, sub) {
+  return '<div class="emp-cell">' + avatarHtml(emp) +
+    '<div><div style="font-weight:600">' + esc(emp.name) + '</div>' +
+    '<div class="sub">' + esc(sub || emp.title) + '</div></div></div>';
+}
+function pill(cls, label) { return '<span class="pill ' + cls + '"><span class="dot"></span>' + label + '</span>'; }
+
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function updateBadges() {
+  const lv = LEAVES.filter(l => l.status === 'Bekliyor').length;
+  const ex = EXPENSES.filter(x => x.status === 'Bekliyor').length;
+  const bl = document.getElementById('badge-leaves'), be = document.getElementById('badge-exp'), bb = document.getElementById('bell-badge');
+  bl.hidden = lv === 0; bl.textContent = lv;
+  be.hidden = ex === 0; be.textContent = ex;
+  bb.hidden = (lv + ex) === 0; bb.textContent = lv + ex;
+}
+
+/* ---------- Bildirim zili ---------- */
+function renderBell() {
+  const pop = document.getElementById('bell-pop');
+  const lv = LEAVES.filter(l => l.status === 'Bekliyor');
+  const ex = EXPENSES.filter(x => x.status === 'Bekliyor');
+  const nextSdx = TODAY.getDate() >= 5
+    ? sodexoDate(new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 1))
+    : sodexoDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
+  const bdToday = EMPLOYEES.filter(e => e.birthday.month === TODAY.getMonth() + 1 && e.birthday.day === TODAY.getDate());
+  let html = '<div class="pop-title">Bildirimler</div>';
+  if (lv.length) html += '<button class="pop-item" data-goto="leaves"><span class="p-dot" style="background:var(--warn)"></span><span><b>' + lv.length + ' izin talebi</b> onayınızı bekliyor</span></button>';
+  if (ex.length) html += '<button class="pop-item" data-goto="expenses"><span class="p-dot" style="background:var(--warn)"></span><span><b>' + ex.length + ' masraf talebi</b> onayınızı bekliyor</span></button>';
+  html += '<button class="pop-item" data-goto="sodexo"><span class="p-dot" style="background:var(--accent)"></span><span>Sonraki <b>Sodexo yüklemesi</b> ' + fmtDateShort(nextSdx) + ' tarihinde (' + Math.max(0, Math.round((nextSdx - TODAY) / 864e5)) + ' gün)</span></button>';
+  bdToday.forEach(e => { html += '<button class="pop-item" data-goto="employees"><span class="p-dot" style="background:var(--good)"></span><span>Bugün <b>' + esc(e.name) + '</b>’in doğum günü 🎂</span></button>'; });
+  if (!lv.length && !ex.length && !bdToday.length) html += '<div class="pop-item"><span>Bekleyen kritik bildirim yok.</span></div>';
+  pop.innerHTML = html;
+  pop.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => {
+    pop.classList.remove('show');
+    switchView(b.dataset.goto);
+  }));
+}
+document.getElementById('bell-btn').addEventListener('click', ev => {
+  ev.stopPropagation();
+  const pop = document.getElementById('bell-pop');
+  if (!pop.classList.contains('show')) renderBell();
+  pop.classList.toggle('show');
+});
+document.addEventListener('click', ev => {
+  const pop = document.getElementById('bell-pop');
+  if (pop.classList.contains('show') && !ev.target.closest('.bell-wrap')) pop.classList.remove('show');
+});
+
+/* ---------- Çizgi grafik (SVG) ---------- */
+function lineChart(el, days, series, tooltipTitleFn) {
+  const W = 720, H = 250, L = 34, R = 96, T = 14, B = 30;
+  const iw = W - L - R, ih = H - T - B;
+  const maxV = Math.max(5, ...series.flatMap(s => s.values));
+  const yMax = Math.ceil(maxV / 5) * 5;
+  const x = i => L + (days.length === 1 ? iw / 2 : i * (iw / (days.length - 1)));
+  const y = v => T + ih - (v / yMax) * ih;
+
+  let g = '';
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const v = Math.round(yMax * i / steps), yy = y(v);
+    g += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="var(--grid)" stroke-width="1"/>';
+    g += '<text x="' + (L - 8) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="11" fill="var(--muted)" style="font-variant-numeric:tabular-nums">' + v + '</text>';
+  }
+  days.forEach((d, i) => {
+    if (i % 2 === 0 || days.length <= 6) {
+      g += '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11" fill="var(--muted)">' + fmtDateShort(d) + '</text>';
+    }
+  });
+  g += '<line x1="' + L + '" y1="' + (T + ih) + '" x2="' + (W - R) + '" y2="' + (T + ih) + '" stroke="var(--axis)" stroke-width="1"/>';
+
+  series.forEach(s => {
+    const pts = s.values.map((v, i) => x(i).toFixed(1) + ',' + y(v).toFixed(1)).join(' ');
+    g += '<polyline points="' + pts + '" fill="none" stroke="' + s.color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    const lastY = y(s.values[s.values.length - 1]);
+    g += '<circle cx="' + x(days.length - 1) + '" cy="' + lastY + '" r="3.5" fill="' + s.color + '"/>';
+    g += '<rect x="' + (W - R + 10) + '" y="' + (lastY - 4.5) + '" width="9" height="9" rx="2.5" fill="' + s.color + '"/>';
+    g += '<text x="' + (W - R + 24) + '" y="' + (lastY + 4) + '" font-size="11.5" fill="var(--ink-2)">' + s.name + '</text>';
+  });
+
+  g += '<line id="xh" x1="0" y1="' + T + '" x2="0" y2="' + (T + ih) + '" stroke="var(--axis)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>';
+  series.forEach((s, si) => { g += '<circle class="hpt" data-si="' + si + '" r="4" fill="' + s.color + '" stroke="var(--surface)" stroke-width="2" opacity="0"/>'; });
+  g += '<rect id="cap" x="' + L + '" y="' + T + '" width="' + iw + '" height="' + ih + '" fill="transparent"/>';
+
+  el.innerHTML = '<div class="legend">' + series.map(s => '<span><i style="background:' + s.color + '"></i>' + s.name + '</span>').join('') + '</div>' +
+    '<div class="chart-wrap"><svg viewBox="0 0 ' + W + ' ' + H + '" aria-label="Yoklama grafiği">' + g + '</svg><div class="tooltip" id="tt-line"></div></div>';
+
+  const svg = el.querySelector('svg'), cap = el.querySelector('#cap'),
+        xh = el.querySelector('#xh'), tt = el.querySelector('#tt-line'),
+        hpts = el.querySelectorAll('.hpt'), wrap = el.querySelector('.chart-wrap');
+  cap.addEventListener('mousemove', ev => {
+    const r = svg.getBoundingClientRect();
+    const sx = (ev.clientX - r.left) * (W / r.width);
+    let idx = Math.round((sx - L) / (iw / (days.length - 1)));
+    idx = Math.max(0, Math.min(days.length - 1, idx));
+    const cx = x(idx);
+    xh.setAttribute('x1', cx); xh.setAttribute('x2', cx); xh.setAttribute('opacity', '1');
+    hpts.forEach(p => {
+      const s = series[+p.dataset.si];
+      p.setAttribute('cx', cx); p.setAttribute('cy', y(s.values[idx])); p.setAttribute('opacity', '1');
+    });
+    tt.innerHTML = '<div class="tt-title">' + tooltipTitleFn(days[idx]) + '</div>' +
+      series.map(s => '<div class="tt-row"><span class="tt-key"><i style="background:' + s.color + '"></i>' + s.name + '</span><b>' + s.values[idx] + '</b></div>').join('');
+    tt.classList.add('show');
+    const wr = wrap.getBoundingClientRect();
+    let left = (cx / W) * wr.width + 14;
+    if (left + 170 > wr.width) left -= 190;
+    tt.style.left = left + 'px';
+    tt.style.top = '18px';
+  });
+  cap.addEventListener('mouseleave', () => {
+    xh.setAttribute('opacity', '0'); hpts.forEach(p => p.setAttribute('opacity', '0')); tt.classList.remove('show');
+  });
+}
+
+/* ---------- Dikey çubuk grafik (SVG) ---------- */
+function barChart(el, labels, values, fmtVal, tooltipFn) {
+  const W = 720, H = 220, L = 10, R = 10, T = 26, B = 26;
+  const iw = W - L - R, ih = H - T - B;
+  const maxV = Math.max(...values) * 1.08;
+  const bw = Math.min(64, iw / labels.length * 0.55);
+  let g = '';
+  g += '<line x1="' + L + '" y1="' + (T + ih) + '" x2="' + (W - R) + '" y2="' + (T + ih) + '" stroke="var(--axis)" stroke-width="1"/>';
+  values.forEach((v, i) => {
+    const cx = L + (i + 0.5) * (iw / labels.length);
+    const bh = Math.max(3, (v / maxV) * ih);
+    g += '<rect class="bar" data-i="' + i + '" x="' + (cx - bw / 2) + '" y="' + (T + ih - bh) + '" width="' + bw + '" height="' + bh + '" rx="4" fill="var(--s1)"/>';
+    g += '<text x="' + cx + '" y="' + (T + ih - bh - 7) + '" text-anchor="middle" font-size="11" fill="var(--ink-2)" style="font-variant-numeric:tabular-nums">' + fmtVal(v) + '</text>';
+    g += '<text x="' + cx + '" y="' + (H - 7) + '" text-anchor="middle" font-size="11" fill="var(--muted)">' + labels[i] + '</text>';
+  });
+  el.innerHTML = '<div class="chart-wrap"><svg viewBox="0 0 ' + W + ' ' + H + '" aria-label="Aylık toplam grafiği">' + g + '</svg><div class="tooltip" id="tt-bar"></div></div>';
+  const tt = el.querySelector('#tt-bar'), wrap = el.querySelector('.chart-wrap');
+  el.querySelectorAll('.bar').forEach(b => {
+    b.addEventListener('mousemove', ev => {
+      const i = +b.dataset.i;
+      tt.innerHTML = tooltipFn(i);
+      tt.classList.add('show');
+      const wr = wrap.getBoundingClientRect();
+      let left = ev.clientX - wr.left + 12;
+      if (left + 170 > wr.width) left -= 190;
+      tt.style.left = left + 'px';
+      tt.style.top = (ev.clientY - wr.top - 40) + 'px';
+    });
+    b.addEventListener('mouseleave', () => tt.classList.remove('show'));
+  });
+}
+
+/* =========================================================
+   GÖRÜNÜM: Genel Bakış
+   ========================================================= */
+function renderDashboard() {
+  const el = document.getElementById('view-dashboard');
+  const c = dayCounts(REF_DAY);
+  const p = dayCounts(prevWorkday(REF_DAY));
+  const isToday = iso(REF_DAY) === iso(TODAY);
+  const dayLabel = isToday ? 'Bugün' : 'Son iş günü (' + fmtDateShort(REF_DAY) + ')';
+
+  function delta(cur, prev) {
+    const d = cur - prev;
+    if (d === 0) return '<span>önceki günle aynı</span>';
+    return d > 0 ? '<span class="up">▲ ' + d + '</span> önceki güne göre'
+                 : '<span class="down">▼ ' + Math.abs(d) + '</span> önceki güne göre';
+  }
+
+  const thisMonth = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+  const sodexoThis = sodexoDate(thisMonth);
+  const sodexoDone = TODAY >= sodexoThis;
+  const nextSodexo = sodexoDate(new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 1));
+
+  const pending = LEAVES.filter(l => l.status === 'Bekliyor');
+  const pendingExp = EXPENSES.filter(x => x.status === 'Bekliyor');
+  const pendingExpTotal = pendingExp.reduce((s, x) => s + x.amount, 0);
+  const avgSeniority = (EMPLOYEES.reduce((s, e) => s + (TODAY - e.hire) / (365.25 * 864e5), 0) / EMPLOYEES.length).toFixed(1);
+
+  const upcomingBd = EMPLOYEES.map(e => {
+    let d = new Date(TODAY.getFullYear(), e.birthday.month - 1, e.birthday.day, 12);
+    if (d < TODAY) d = new Date(TODAY.getFullYear() + 1, e.birthday.month - 1, e.birthday.day, 12);
+    return { e, d, diff: Math.round((d - TODAY) / 864e5) };
+  }).filter(x => x.diff <= 45).sort((a, b) => a.diff - b.diff).slice(0, 4);
+
+  const deptCounts = DEPTS.map(d => ({ d, n: EMPLOYEES.filter(e => e.dept === d).length })).sort((a, b) => b.n - a.n);
+  const maxDept = deptCounts[0].n;
+  const activity = buildActivity();
+
+  el.innerHTML =
+    '<div class="kpis">' +
+      '<div class="card kpi"><div class="k-label">' + dayLabel + ' Ofiste</div><div class="k-value">' + c.ofis + '</div><div class="k-delta">' + delta(c.ofis, p.ofis) + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Uzaktan Çalışan</div><div class="k-value">' + c.uzaktan + '</div><div class="k-delta">' + delta(c.uzaktan, p.uzaktan) + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">İzinli / Raporlu</div><div class="k-value">' + (c.izinli + c.raporlu) + '</div><div class="k-delta">' + c.izinli + ' izinli · ' + c.raporlu + ' raporlu</div></div>' +
+      '<div class="card kpi"><div class="k-label">Geç Gelen</div><div class="k-value">' + c.gec + '</div><div class="k-delta">09:15 sonrası giriş</div></div>' +
+      '<div class="card kpi"><div class="k-label">Aylık Personel Maliyeti</div><div class="k-value sm">' + fmtMoney.format(TOTAL_COST) + '</div><div class="k-delta">brüt + işveren SGK payı</div></div>' +
+      '<div class="card kpi"><div class="k-label">Ortalama Kıdem</div><div class="k-value sm">' + avgSeniority.replace('.', ',') + ' yıl</div><div class="k-delta">' + EMPLOYEES.length + ' aktif çalışan</div></div>' +
+      '<div class="card kpi"><div class="k-label">Bekleyen Masraf</div><div class="k-value sm">' + fmtMoney.format(pendingExpTotal) + '</div><div class="k-delta">' + pendingExp.length + ' talep onay bekliyor</div></div>' +
+      '<div class="card kpi"><div class="k-label">Açık Pozisyon</div><div class="k-value sm">3</div><div class="k-delta">5 aday mülakat aşamasında</div></div>' +
+    '</div>' +
+
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<div class="card-head"><h2>Yoklama — Son 10 İş Günü</h2><span class="hint">' + EMPLOYEES.length + ' çalışan</span></div>' +
+        '<div class="card-body" id="dash-line"></div>' +
+      '</div>' +
+      '<div class="stack">' +
+        '<div class="card">' +
+          '<div class="card-head"><h2>Sodexo Yüklemesi</h2></div>' +
+          '<div class="card-body">' +
+            '<div class="row-item" style="border:none;padding-top:0">' +
+              '<div class="r-text"><b>' + fmtDate(sodexoThis) + '</b><span>' + fmtMonth(thisMonth) + ' yüklemesi · ' + fmtMoney.format(sodexoTotal(thisMonth)) + '</span></div>' +
+              pill(sodexoDone ? 'pill-good' : 'pill-warn', sodexoDone ? 'Yattı' : 'Bekliyor') +
+            '</div>' +
+            '<div class="row-item" style="border:none;padding-bottom:0">' +
+              '<div class="r-text"><b>Sonraki yükleme</b><span>' + fmtDate(nextSodexo) + '</span></div>' +
+              '<span class="pill pill-neutral"><span class="dot"></span>' + Math.max(0, Math.round((nextSodexo - TODAY) / 864e5)) + ' gün kaldı</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-head"><h2>Departman Dağılımı</h2></div>' +
+          '<div class="card-body">' +
+            deptCounts.map(x =>
+              '<div class="hbar-row"><span class="hb-label">' + x.d + '</span>' +
+              '<div class="hbar-track"><div class="hbar-fill" style="width:' + (x.n / maxDept * 100) + '%"></div></div>' +
+              '<span class="hb-val">' + x.n + '</span></div>').join('') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="grid-2b">' +
+      '<div class="card">' +
+        '<div class="card-head"><h2>Bekleyen İzin Talepleri</h2><button class="chip" data-goto="leaves">Tümünü gör</button></div>' +
+        '<div class="card-body row-list">' +
+          (pending.length ? pending.slice(0, 5).map(l =>
+            '<div class="row-item"><div class="r-main">' + avatarHtml(l.emp) +
+            '<div class="r-text"><b>' + esc(l.emp.name) + '</b><span>' + l.type + ' · ' + fmtDateShort(l.start) + ' – ' + fmtDateShort(l.end) + ' (' + l.days + ' gün)</span></div></div>' +
+            pill('pill-warn', 'Bekliyor') + '</div>').join('')
+          : '<div class="empty-note">Bekleyen talep yok 🎉</div>') +
+        '</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="card-head"><h2>Yaklaşan Doğum Günleri</h2><span class="hint">45 gün içinde</span></div>' +
+        '<div class="card-body row-list">' +
+          (upcomingBd.length ? upcomingBd.map(x =>
+            '<div class="row-item"><div class="r-main">' + avatarHtml(x.e) +
+            '<div class="r-text"><b>' + esc(x.e.name) + '</b><span>' + x.e.dept + '</span></div></div>' +
+            '<span class="pill pill-info"><span class="dot"></span>' + fmtDateShort(x.d) + (x.diff === 0 ? ' · bugün!' : '') + '</span></div>').join('')
+          : '<div class="empty-note">Yaklaşan doğum günü yok</div>') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="grid-2b" style="margin-bottom:0">' +
+      '<div class="card">' +
+        '<div class="card-head"><h2>Şirket Duyuruları</h2><span class="hint">İK &amp; Yönetim</span></div>' +
+        '<div class="card-body row-list">' +
+          ANNOUNCEMENTS.map(a =>
+            '<div class="row-item" style="align-items:flex-start">' +
+            '<div class="r-text" style="min-width:0"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>' + a.t + '</b><span class="ann-cat">' + a.cat + '</span></div>' +
+            '<div class="ann-body">' + a.body + '</div></div>' +
+            '<span class="r-time">' + relDay(a.d) + '</span></div>').join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="card-head"><h2>Son Aktiviteler</h2><span class="hint">Sistem kaydı</span></div>' +
+        '<div class="card-body row-list">' +
+          activity.map(a =>
+            '<div class="row-item"><div class="r-text" style="min-width:0"><span style="font-size:13px;color:var(--ink-2)">' + a.text + '</span></div>' +
+            '<span class="r-time">' + relDay(a.d) + '</span></div>').join('') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  const days = lastWorkdays(10, REF_DAY);
+  const counts = days.map(dayCounts);
+  lineChart(document.getElementById('dash-line'), days, [
+    { name: 'Ofiste', color: 'var(--s1)', values: counts.map(x => x.ofis) },
+    { name: 'Uzaktan', color: 'var(--s2)', values: counts.map(x => x.uzaktan) },
+    { name: 'İzinli', color: 'var(--s3)', values: counts.map(x => x.izinli + x.raporlu) },
+  ], d => fmtDateWd(d));
+
+  el.querySelector('[data-goto]').addEventListener('click', () => switchView('leaves'));
+}
+
+/* =========================================================
+   GÖRÜNÜM: Çalışanlar
+   ========================================================= */
+let empSearch = '', empDept = 'Tümü';
+function renderEmployees() {
+  const el = document.getElementById('view-employees');
+  el.innerHTML =
+    '<div class="controls">' +
+      '<div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
+      '<input id="emp-q" type="text" placeholder="İsim veya ünvan ara…" value="' + esc(empSearch) + '" aria-label="Çalışan ara"></div>' +
+      '<select class="ctl" id="emp-dept" aria-label="Departman filtresi">' +
+        ['Tümü', ...DEPTS].map(d => '<option' + (d === empDept ? ' selected' : '') + '>' + d + '</option>').join('') +
+      '</select>' +
+    '</div>' +
+    '<div class="card"><div class="table-wrap"><table class="wide" id="emp-table">' +
+      '<thead><tr><th>Çalışan</th><th>Departman</th><th>Lokasyon</th><th>Çalışma Şekli</th><th>İşe Giriş</th><th class="num">Kıdem</th><th class="num">İzin Bakiyesi</th><th>Bugünkü Durum</th></tr></thead>' +
+      '<tbody></tbody></table></div></div>';
+
+  function fill() {
+    const q = empSearch.toLocaleLowerCase('tr');
+    const rows = EMPLOYEES.filter(e =>
+      (empDept === 'Tümü' || e.dept === empDept) &&
+      (!q || e.name.toLocaleLowerCase('tr').includes(q) || e.title.toLocaleLowerCase('tr').includes(q))
+    );
+    el.querySelector('tbody').innerHTML = rows.length ? rows.map(e => {
+      const a = attendanceFor(e, REF_DAY);
+      const m = ATT_META[a.status];
+      return '<tr class="clickable" data-id="' + e.id + '">' +
+        '<td>' + empCell(e) + '</td>' +
+        '<td>' + e.dept + '</td>' +
+        '<td>' + e.location + '</td>' +
+        '<td>' + e.workMode + '</td>' +
+        '<td>' + fmtDate(e.hire) + '</td>' +
+        '<td class="num">' + e.seniority + ' yıl</td>' +
+        '<td class="num">' + e.remaining + ' / ' + e.entitlement + ' gün</td>' +
+        '<td>' + pill(m.pill, m.label) + '</td></tr>';
+    }).join('') : '<tr><td colspan="8" class="empty-note" style="white-space:normal">Eşleşen çalışan bulunamadı.</td></tr>';
+    el.querySelectorAll('tr.clickable').forEach(tr =>
+      tr.addEventListener('click', () => openEmployee(+tr.dataset.id)));
+  }
+  fill();
+  el.querySelector('#emp-q').addEventListener('input', ev => { empSearch = ev.target.value; fill(); });
+  el.querySelector('#emp-dept').addEventListener('change', ev => { empDept = ev.target.value; fill(); });
+}
+
+/* ---------- Çalışan kartı (sekmeli) ---------- */
+function openEmployee(id) {
+  const e = EMPLOYEES.find(x => x.id === id);
+  const modal = document.getElementById('modal'), ov = document.getElementById('overlay');
+
+  function tabProfile() {
+    return '<div class="fact-grid">' +
+      '<div class="fact"><div class="f-label">Sicil No</div><div class="f-value">' + e.sicil + '</div></div>' +
+      '<div class="fact"><div class="f-label">SGK No</div><div class="f-value">' + e.sgkNo + '</div></div>' +
+      '<div class="fact"><div class="f-label">E-posta</div><div class="f-value" style="font-size:12.5px">' + e.email + '</div></div>' +
+      '<div class="fact"><div class="f-label">Telefon</div><div class="f-value">' + e.phone + '</div></div>' +
+      '<div class="fact"><div class="f-label">İşe Giriş</div><div class="f-value">' + fmtDate(e.hire) + '</div></div>' +
+      '<div class="fact"><div class="f-label">Kıdem</div><div class="f-value">' + e.seniority + ' yıl</div></div>' +
+      '<div class="fact"><div class="f-label">Yönetici</div><div class="f-value" style="font-size:13px">' + esc(managerOf(e)) + '</div></div>' +
+      '<div class="fact"><div class="f-label">Lokasyon</div><div class="f-value" style="font-size:13px">' + e.location + ' · ' + e.workMode + '</div></div>' +
+    '</div>' +
+    '<h4>Yıllık izin bakiyesi — ' + e.remaining + ' gün kaldı (' + e.usedLeave + ' / ' + e.entitlement + ' kullanıldı)</h4>' +
+    '<div class="progress"><i style="width:' + (e.usedLeave / e.entitlement * 100) + '%"></i></div>';
+  }
+
+  function tabAttendance() {
+    const days20 = lastWorkdays(20, REF_DAY);
+    const recs = days20.map(d => attendanceFor(e, d));
+    const present = recs.filter(a => a.checkIn != null);
+    const late = recs.filter(a => a.status === 'gec').length;
+    const remote = recs.filter(a => a.status === 'uzaktan').length;
+    const avgIn = present.length ? Math.round(present.reduce((s, a) => s + a.checkIn, 0) / present.length) : null;
+    const last7 = lastWorkdays(7, REF_DAY).reverse();
+    return '<div class="fact-grid" style="grid-template-columns:repeat(3,1fr)">' +
+      '<div class="fact"><div class="f-label">Ort. Giriş (20 gün)</div><div class="f-value">' + (avgIn != null ? minToClock(avgIn) : '—') + '</div></div>' +
+      '<div class="fact"><div class="f-label">Geç Kalma</div><div class="f-value">' + late + ' gün</div></div>' +
+      '<div class="fact"><div class="f-label">Uzaktan</div><div class="f-value">' + remote + ' gün</div></div>' +
+    '</div>' +
+    '<h4>Son 7 iş günü</h4>' +
+    '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th class="num">Süre</th><th>Durum</th></tr></thead><tbody>' +
+      last7.map(d => {
+        const a = attendanceFor(e, d), m = ATT_META[a.status];
+        return '<tr><td>' + fmtDateShort(d) + '</td>' +
+          '<td class="mono">' + (a.checkIn != null ? minToClock(a.checkIn) : '—') + '</td>' +
+          '<td class="mono">' + (a.checkOut != null ? minToClock(a.checkOut) : '—') + '</td>' +
+          '<td class="num">' + (a.mins != null ? durText(a.mins) : '—') + '</td>' +
+          '<td>' + pill(m.pill, m.label) + '</td></tr>';
+      }).join('') +
+    '</tbody></table></div>';
+  }
+
+  function tabAssets() {
+    const items = ASSETS.filter(a => a.emp.id === e.id);
+    if (!items.length) return '<div class="empty-note">Bu çalışana zimmetli demirbaş bulunmuyor.</div>';
+    return '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Tür</th><th>Model</th><th>Seri No</th><th>Veriliş</th><th>Durum</th></tr></thead><tbody>' +
+      items.map(a => '<tr><td class="strong">' + a.type + '</td><td>' + a.model + '</td><td class="mono">' + a.serial + '</td><td>' + fmtDateShort(a.given) + ' ' + a.given.getFullYear() + '</td><td>' + pill(ASSET_PILL[a.status], a.status) + '</td></tr>').join('') +
+    '</tbody></table></div>';
+  }
+
+  function tabPay() {
+    const ps = payslipOf(e);
+    return '<div class="payslip-row"><span>Brüt Ücret</span><b>' + fmtMoney.format(ps.brut) + '</b></div>' +
+      '<div class="payslip-row"><span>SGK İşçi Payı (%14)</span><b class="neg">− ' + fmtMoney.format(ps.sgk) + '</b></div>' +
+      '<div class="payslip-row"><span>İşsizlik Sigortası (%1)</span><b class="neg">− ' + fmtMoney.format(ps.issizlik) + '</b></div>' +
+      '<div class="payslip-row"><span>Gelir Vergisi</span><b class="neg">− ' + fmtMoney.format(ps.gv) + '</b></div>' +
+      '<div class="payslip-row"><span>Damga Vergisi</span><b class="neg">− ' + fmtMoney.format(ps.damga) + '</b></div>' +
+      '<div class="payslip-total"><span>Net Ödenen</span><b>' + fmtMoney.format(ps.net) + '</b></div>' +
+      '<h4>İşveren maliyeti</h4>' +
+      '<div class="payslip-row"><span>İşveren SGK + İşsizlik Payı</span><b>' + fmtMoney.format(ps.isverenSgk + ps.isverenIssizlik) + '</b></div>' +
+      '<div class="payslip-row"><span>Toplam Aylık Maliyet</span><b>' + fmtMoney.format(ps.cost) + '</b></div>' +
+      '<div class="empty-note" style="padding-bottom:0">' + e.bank + ' · ' + e.iban + ' · Sodexo günlük ' + fmtMoney.format(e.mealDaily) + '</div>';
+  }
+
+  const TABS = [
+    { key: 'profil', label: 'Profil', fn: tabProfile },
+    { key: 'devam', label: 'Devam', fn: tabAttendance },
+    { key: 'zimmet', label: 'Zimmet', fn: tabAssets },
+    { key: 'bordro', label: 'Bordro', fn: tabPay },
+  ];
+
+  modal.innerHTML =
+    '<div class="modal-head">' + avatarHtml(e) +
+      '<div><h3>' + esc(e.name) + '</h3><p>' + esc(e.title) + ' · ' + e.dept + '</p></div>' +
+      '<button class="modal-close" aria-label="Kapat">×</button>' +
+    '</div>' +
+    '<div class="tabs">' + TABS.map((t, i) => '<button class="tab' + (i === 0 ? ' active' : '') + '" data-tab="' + t.key + '">' + t.label + '</button>').join('') + '</div>' +
+    '<div id="tab-content"></div>';
+  document.getElementById('tab-content').innerHTML = tabProfile();
+
+  modal.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    modal.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+    document.getElementById('tab-content').innerHTML = TABS.find(x => x.key === t.dataset.tab).fn();
+  }));
+  ov.classList.add('show');
+  modal.querySelector('.modal-close').focus();
+  modal.querySelector('.modal-close').addEventListener('click', closeModal);
+}
+function closeModal() { document.getElementById('overlay').classList.remove('show'); }
+document.getElementById('overlay').addEventListener('click', ev => { if (ev.target.id === 'overlay') closeModal(); });
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeModal(); });
+
+/* =========================================================
+   GÖRÜNÜM: Giriş – Çıkış (PDKS)
+   ========================================================= */
+let pdksDay = iso(REF_DAY), pdksDept = 'Tümü', pdksStatus = 'Tümü';
+function renderPdks() {
+  const el = document.getElementById('view-pdks');
+  const days = lastWorkdays(10, REF_DAY);
+  el.innerHTML =
+    '<div class="controls"><div class="chips" id="pdks-days">' +
+      days.map(d => '<button class="chip' + (iso(d) === pdksDay ? ' active' : '') + '" data-day="' + iso(d) + '">' +
+        (iso(d) === iso(TODAY) ? 'Bugün' : fmtDateShort(d)) + '</button>').join('') +
+    '</div></div>' +
+    '<div class="controls">' +
+      '<select class="ctl" id="pdks-dept" aria-label="Departman">' + ['Tümü', ...DEPTS].map(d => '<option' + (d === pdksDept ? ' selected' : '') + '>' + d + '</option>').join('') + '</select>' +
+      '<select class="ctl" id="pdks-status" aria-label="Durum">' + ['Tümü', 'Ofiste', 'Geç Geldi', 'Uzaktan', 'İzinli', 'Raporlu'].map(s => '<option' + (s === pdksStatus ? ' selected' : '') + '>' + s + '</option>').join('') + '</select>' +
+      '<button class="btn" id="pdks-csv" style="margin-left:auto">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>' +
+        'CSV Kopyala</button>' +
+    '</div>' +
+    '<div class="kpis" id="pdks-kpis"></div>' +
+    '<div class="card"><div class="card-head"><h2 id="pdks-title"></h2><span class="hint">PDKS kart okuyucu · dummy</span></div>' +
+    '<div class="card-body table-wrap" style="padding-top:6px"><table class="wide">' +
+      '<thead><tr><th>Çalışan</th><th>Departman</th><th>Giriş</th><th>Çıkış</th><th class="num">Süre</th><th class="num">Fazla Mesai</th><th>Durum</th></tr></thead>' +
+      '<tbody id="pdks-body"></tbody></table></div></div>';
+
+  function currentRecs() {
+    const day = days.find(d => iso(d) === pdksDay) || REF_DAY;
+    return { day, recs: EMPLOYEES.map(e => ({ e, a: attendanceFor(e, day) })) };
+  }
+  function fill() {
+    const { day, recs } = currentRecs();
+    const present = recs.filter(r => r.a.checkIn != null);
+    const avg = arr => arr.length ? Math.round(arr.reduce((s, x) => s + x, 0) / arr.length) : null;
+    const avgIn = avg(present.map(r => r.a.checkIn));
+    const avgOut = avg(present.map(r => r.a.checkOut));
+    const late = recs.filter(r => r.a.status === 'gec').length;
+    const totalOt = present.reduce((s, r) => s + r.a.overtime, 0);
+
+    document.getElementById('pdks-kpis').innerHTML =
+      '<div class="card kpi"><div class="k-label">Ortalama Giriş</div><div class="k-value">' + (avgIn != null ? minToClock(avgIn) : '—') + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Ortalama Çıkış</div><div class="k-value">' + (avgOut != null ? minToClock(avgOut) : '—') + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Geç Gelen</div><div class="k-value">' + late + '</div><div class="k-delta">09:15 sonrası</div></div>' +
+      '<div class="card kpi"><div class="k-label">Toplam Fazla Mesai</div><div class="k-value sm">' + durText(totalOt) + '</div><div class="k-delta">9 saati aşan süreler</div></div>';
+    document.getElementById('pdks-title').textContent = fmtDateWd(day);
+
+    const filtered = recs.filter(r =>
+      (pdksDept === 'Tümü' || r.e.dept === pdksDept) &&
+      (pdksStatus === 'Tümü' || ATT_META[r.a.status].label === pdksStatus));
+    document.getElementById('pdks-body').innerHTML = filtered.length ? filtered.map(r => {
+      const m = ATT_META[r.a.status];
+      return '<tr><td>' + empCell(r.e) + '</td><td>' + r.e.dept + '</td>' +
+        '<td class="mono">' + (r.a.checkIn != null ? minToClock(r.a.checkIn) : '—') + '</td>' +
+        '<td class="mono">' + (r.a.checkOut != null ? minToClock(r.a.checkOut) : '—') + '</td>' +
+        '<td class="num">' + (r.a.mins != null ? durText(r.a.mins) : '—') + '</td>' +
+        '<td class="num">' + (r.a.overtime > 0 ? '<span style="color:var(--good-text);font-weight:600">+' + durText(r.a.overtime) + '</span>' : '—') + '</td>' +
+        '<td>' + pill(m.pill, m.label) + '</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="empty-note" style="white-space:normal">Bu filtrede kayıt yok.</td></tr>';
+  }
+  fill();
+  el.querySelectorAll('#pdks-days .chip').forEach(ch => ch.addEventListener('click', () => {
+    pdksDay = ch.dataset.day;
+    el.querySelectorAll('#pdks-days .chip').forEach(c => c.classList.toggle('active', c === ch));
+    fill();
+  }));
+  el.querySelector('#pdks-dept').addEventListener('change', ev => { pdksDept = ev.target.value; fill(); });
+  el.querySelector('#pdks-status').addEventListener('change', ev => { pdksStatus = ev.target.value; fill(); });
+  el.querySelector('#pdks-csv').addEventListener('click', () => {
+    const { day, recs } = currentRecs();
+    const rows = [['Çalışan', 'Departman', 'Tarih', 'Giriş', 'Çıkış', 'Süre (dk)', 'Durum'].join(';')];
+    recs.forEach(r => rows.push([r.e.name, r.e.dept, iso(day),
+      r.a.checkIn != null ? minToClock(r.a.checkIn) : '',
+      r.a.checkOut != null ? minToClock(r.a.checkOut) : '',
+      r.a.mins != null ? r.a.mins : '', ATT_META[r.a.status].label].join(';')));
+    navigator.clipboard.writeText(rows.join('\n'))
+      .then(() => toast('PDKS tablosu panoya kopyalandı (' + recs.length + ' satır)'))
+      .catch(() => toast('Kopyalama başarısız — tarayıcı izni gerekli'));
+  });
+}
+
+/* =========================================================
+   GÖRÜNÜM: İzinler
+   ========================================================= */
+let leaveFilter = 'Tümü';
+function renderLeaves() {
+  const el = document.getElementById('view-leaves');
+  const upcomingHolidays = HOLIDAYS.filter(h => h.date >= addDays(TODAY, -1)).slice(0, 6);
+  const typeCounts = {};
+  LEAVES.forEach(l => { typeCounts[l.type] = (typeCounts[l.type] || 0) + 1; });
+  const typeList = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+  const maxType = typeList.length ? typeList[0][1] : 1;
+
+  el.innerHTML =
+    '<div class="controls"><div class="chips" id="lv-chips">' +
+      ['Tümü', 'Bekliyor', 'Onaylandı', 'Reddedildi'].map(s =>
+        '<button class="chip' + (s === leaveFilter ? ' active' : '') + '" data-f="' + s + '">' + s + '</button>').join('') +
+    '</div></div>' +
+    '<div class="grid-2">' +
+      '<div class="card"><div class="card-head"><h2>İzin Talepleri</h2><span class="hint" id="lv-count"></span></div>' +
+      '<div class="card-body table-wrap" style="padding-top:6px"><table>' +
+        '<thead><tr><th>Çalışan</th><th>Tür</th><th>Tarih Aralığı</th><th class="num">Gün</th><th>Durum</th><th></th></tr></thead>' +
+        '<tbody id="lv-body"></tbody></table></div></div>' +
+      '<div class="stack">' +
+        '<div class="card"><div class="card-head"><h2>2026 Resmi Tatilleri</h2><span class="hint">Yaklaşanlar</span></div>' +
+        '<div class="card-body row-list">' +
+          upcomingHolidays.map(h => {
+            const diff = Math.round((h.date - TODAY) / 864e5);
+            return '<div class="row-item"><div class="r-text"><b>' + h.name + '</b><span>' + fmtDateWd(h.date) + '</span></div>' +
+              '<span class="pill pill-neutral"><span class="dot"></span>' + (diff <= 0 ? 'bugün' : diff + ' gün') + '</span></div>';
+          }).join('') +
+        '</div></div>' +
+        '<div class="card"><div class="card-head"><h2>Talep Türü Dağılımı</h2></div>' +
+        '<div class="card-body">' +
+          typeList.map(t =>
+            '<div class="hbar-row"><span class="hb-label">' + t[0] + '</span>' +
+            '<div class="hbar-track"><div class="hbar-fill" style="width:' + (t[1] / maxType * 100) + '%"></div></div>' +
+            '<span class="hb-val">' + t[1] + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="card"><div class="card-head"><h2>En Düşük Bakiyeler</h2></div>' +
+        '<div class="card-body row-list">' +
+          EMPLOYEES.slice().sort((a, b) => a.remaining - b.remaining).slice(0, 5).map(e =>
+            '<div class="row-item"><div class="r-main">' + avatarHtml(e) +
+            '<div class="r-text" style="min-width:120px"><b>' + esc(e.name) + '</b><span>' + e.usedLeave + ' / ' + e.entitlement + ' kullanıldı</span></div></div>' +
+            '<div style="flex:1;max-width:140px" class="progress"><i class="' + (e.remaining <= 3 ? 'p-warn' : '') + '" style="width:' + (e.usedLeave / e.entitlement * 100) + '%"></i></div>' +
+            '<b style="font-variant-numeric:tabular-nums;font-size:13px">' + e.remaining + ' gün</b></div>').join('') +
+        '</div></div>' +
+      '</div>' +
+    '</div>';
+
+  function fill() {
+    const rows = LEAVES.filter(l => leaveFilter === 'Tümü' || l.status === leaveFilter);
+    document.getElementById('lv-count').textContent = rows.length + ' talep';
+    document.getElementById('lv-body').innerHTML = rows.length ? rows.map(l =>
+      '<tr><td>' + empCell(l.emp, l.emp.dept) + '</td>' +
+      '<td>' + l.type + '</td>' +
+      '<td>' + fmtDateShort(l.start) + ' – ' + fmtDateShort(l.end) + '</td>' +
+      '<td class="num">' + l.days + '</td>' +
+      '<td>' + pill(LEAVE_PILL[l.status], l.status) + '</td>' +
+      '<td>' + (l.status === 'Bekliyor'
+        ? '<span style="display:inline-flex;gap:6px"><button class="btn btn-approve" data-act="Onaylandı" data-id="' + l.id + '">Onayla</button>' +
+          '<button class="btn btn-reject" data-act="Reddedildi" data-id="' + l.id + '">Reddet</button></span>'
+        : '') + '</td></tr>').join('')
+      : '<tr><td colspan="6" class="empty-note" style="white-space:normal">Bu filtrede talep yok.</td></tr>';
+    el.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+      const l = LEAVES.find(x => x.id === +b.dataset.id);
+      l.status = b.dataset.act;
+      toast(l.emp.name + ' — izin talebi ' + (l.status === 'Onaylandı' ? 'onaylandı ✓' : 'reddedildi'));
+      updateBadges();
+      fill();
+    }));
+  }
+  fill();
+  el.querySelectorAll('#lv-chips .chip').forEach(ch => ch.addEventListener('click', () => {
+    leaveFilter = ch.dataset.f;
+    el.querySelectorAll('#lv-chips .chip').forEach(c => c.classList.toggle('active', c === ch));
+    fill();
+  }));
+}
+
+/* =========================================================
+   GÖRÜNÜM: Zimmet
+   ========================================================= */
+let assetFilter = 'Tümü';
+function renderAssets() {
+  const el = document.getElementById('view-assets');
+  const types = ['Tümü', 'Laptop', 'Telefon', 'Monitör', 'Aksesuar'];
+  const active = ASSETS.filter(a => a.status === 'Aktif').length;
+  const broken = ASSETS.filter(a => a.status === 'Arızalı').length;
+  const returning = ASSETS.filter(a => a.status === 'İade Sürecinde').length;
+
+  el.innerHTML =
+    '<div class="controls"><div class="chips" id="as-chips">' +
+      types.map(t => '<button class="chip' + (t === assetFilter ? ' active' : '') + '" data-f="' + t + '">' + t + '</button>').join('') +
+    '</div></div>' +
+    '<div class="kpis">' +
+      '<div class="card kpi"><div class="k-label">Toplam Demirbaş</div><div class="k-value">' + ASSETS.length + '</div><div class="k-delta">' + EMPLOYEES.length + ' çalışana zimmetli</div></div>' +
+      '<div class="card kpi"><div class="k-label">Aktif</div><div class="k-value">' + active + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Arızalı</div><div class="k-value">' + broken + '</div><div class="k-delta">teknik servis sürecinde</div></div>' +
+      '<div class="card kpi"><div class="k-label">İade Sürecinde</div><div class="k-value">' + returning + '</div></div>' +
+    '</div>' +
+    '<div class="card"><div class="card-head"><h2>Zimmet Listesi</h2><span class="hint" id="as-count"></span></div>' +
+    '<div class="card-body table-wrap" style="padding-top:6px"><table class="wide">' +
+      '<thead><tr><th>Demirbaş No</th><th>Tür</th><th>Model</th><th>Seri No</th><th>Zimmetli Çalışan</th><th>Veriliş Tarihi</th><th>Durum</th></tr></thead>' +
+      '<tbody id="as-body"></tbody></table></div></div>';
+
+  function fill() {
+    const rows = ASSETS.filter(a => assetFilter === 'Tümü' || a.type === assetFilter);
+    document.getElementById('as-count').textContent = rows.length + ' kayıt';
+    document.getElementById('as-body').innerHTML = rows.map(a =>
+      '<tr><td class="mono">#' + String(a.id).padStart(3, '0') + '</td>' +
+      '<td class="strong">' + a.type + '</td>' +
+      '<td>' + a.model + '</td>' +
+      '<td class="mono">' + a.serial + '</td>' +
+      '<td>' + empCell(a.emp, a.emp.dept) + '</td>' +
+      '<td>' + fmtDate(a.given) + '</td>' +
+      '<td>' + pill(ASSET_PILL[a.status], a.status) + '</td></tr>').join('');
+  }
+  fill();
+  el.querySelectorAll('#as-chips .chip').forEach(ch => ch.addEventListener('click', () => {
+    assetFilter = ch.dataset.f;
+    el.querySelectorAll('#as-chips .chip').forEach(c => c.classList.toggle('active', c === ch));
+    fill();
+  }));
+}
+
+/* =========================================================
+   GÖRÜNÜM: Performans
+   ========================================================= */
+function renderPerf() {
+  const el = document.getElementById('view-perf');
+  const avgScore = (PERF.reduce((s, p) => s + p.score, 0) / PERF.length).toFixed(2).replace('.', ',');
+  const totalTraining = PERF.reduce((s, p) => s + p.training, 0);
+  const highCount = PERF.filter(p => p.band === 'Yüksek Performans').length;
+  const deptAvg = DEPTS.map(d => {
+    const list = PERF.filter(p => p.emp.dept === d);
+    return { d, v: list.reduce((s, p) => s + p.score, 0) / list.length };
+  }).sort((a, b) => b.v - a.v);
+  const top3 = PERF.slice().sort((a, b) => b.score - a.score).slice(0, 3);
+
+  el.innerHTML =
+    '<div class="kpis">' +
+      '<div class="card kpi"><div class="k-label">Ortalama Skor</div><div class="k-value">' + avgScore + '</div><div class="k-delta">5 üzerinden · 2026 H1</div></div>' +
+      '<div class="card kpi"><div class="k-label">Yüksek Performans</div><div class="k-value">' + highCount + '</div><div class="k-delta">4,3 ve üzeri skor</div></div>' +
+      '<div class="card kpi"><div class="k-label">Toplam Eğitim</div><div class="k-value sm">' + totalTraining + ' saat</div><div class="k-delta">dönem içi tamamlanan</div></div>' +
+      '<div class="card kpi"><div class="k-label">Değerlendirme</div><div class="k-value sm">%100</div><div class="k-delta">28 / 28 form tamamlandı</div></div>' +
+    '</div>' +
+    '<div class="grid-2">' +
+      '<div class="card"><div class="card-head"><h2>2026 H1 Değerlendirme Sonuçları</h2><span class="hint">Skor 1–5 · yönetici + öz değerlendirme</span></div>' +
+      '<div class="card-body table-wrap" style="padding-top:6px"><table class="wide">' +
+        '<thead><tr><th>Çalışan</th><th>Departman</th><th class="num">Skor</th><th class="num">Hedef Tamamlama</th><th class="num">Eğitim</th><th>Seviye</th></tr></thead><tbody>' +
+        PERF.slice().sort((a, b) => b.score - a.score).map(p =>
+          '<tr><td>' + empCell(p.emp) + '</td>' +
+          '<td>' + p.emp.dept + '</td>' +
+          '<td class="num strong">' + String(p.score).replace('.', ',') + '</td>' +
+          '<td class="num"><div style="display:inline-flex;align-items:center;gap:8px">%' + p.goal +
+            '<span class="progress" style="width:70px;display:inline-block"><i class="' + (p.goal >= 80 ? 'p-good' : p.goal >= 65 ? '' : 'p-warn') + '" style="width:' + p.goal + '%"></i></span></div></td>' +
+          '<td class="num">' + p.training + ' sa</td>' +
+          '<td>' + pill(p.bandPill, p.band) + '</td></tr>').join('') +
+      '</tbody></table></div></div>' +
+      '<div class="stack">' +
+        '<div class="card"><div class="card-head"><h2>Departman Ortalamaları</h2></div>' +
+        '<div class="card-body">' +
+          deptAvg.map(x =>
+            '<div class="hbar-row"><span class="hb-label">' + x.d + '</span>' +
+            '<div class="hbar-track"><div class="hbar-fill" style="width:' + (x.v / 5 * 100) + '%"></div></div>' +
+            '<span class="hb-val">' + x.v.toFixed(1).replace('.', ',') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="card"><div class="card-head"><h2>Dönemin Öne Çıkanları</h2></div>' +
+        '<div class="card-body row-list">' +
+          top3.map((p, i) =>
+            '<div class="row-item"><div class="r-main">' + avatarHtml(p.emp) +
+            '<div class="r-text"><b>' + esc(p.emp.name) + '</b><span>' + p.emp.title + '</span></div></div>' +
+            '<span class="pill pill-info"><span class="dot"></span>' + (i + 1) + '. sıra · ' + String(p.score).replace('.', ',') + '</span></div>').join('') +
+        '</div></div>' +
+      '</div>' +
+    '</div>';
+}
+
+/* =========================================================
+   GÖRÜNÜM: Bordro
+   ========================================================= */
+let payMonthIdx = 0;
+function renderPayroll() {
+  const el = document.getElementById('view-payroll');
+  const months = monthList(4);
+  el.innerHTML =
+    '<div class="controls"><select class="ctl" id="pay-month" aria-label="Bordro ayı">' +
+      months.map((m, i) => '<option value="' + i + '"' + (i === payMonthIdx ? ' selected' : '') + '>' + fmtMonth(m) + '</option>').join('') +
+    '</select></div>' +
+    '<div class="kpis" id="pay-kpis"></div>' +
+    '<div class="card"><div class="card-head"><h2 id="pay-title"></h2><span class="hint">Satıra tıklayınca bordro pusulası açılır</span></div>' +
+    '<div class="card-body table-wrap" style="padding-top:6px"><table class="wide">' +
+      '<thead><tr><th>Çalışan</th><th>Banka</th><th class="num">Brüt</th><th class="num">Kesintiler</th><th class="num">Net Maaş</th><th>Yatma Tarihi</th><th>Durum</th></tr></thead>' +
+      '<tbody id="pay-body"></tbody><tfoot id="pay-foot"></tfoot></table></div></div>';
+
+  function fill() {
+    const m = months[payMonthIdx];
+    const pDate = payrollDate(m);
+    const done = TODAY >= pDate;
+    let totBrut = 0, totNet = 0, totCost = 0;
+    EMPLOYEES.forEach(e => { const ps = payslipOf(e); totBrut += ps.brut; totNet += ps.net; totCost += ps.cost; });
+    document.getElementById('pay-kpis').innerHTML =
+      '<div class="card kpi"><div class="k-label">Yatma Tarihi</div><div class="k-value sm">' + fmtDate(pDate) + '</div><div class="k-delta">her ayın 1’inde ödenir</div></div>' +
+      '<div class="card kpi"><div class="k-label">Toplam Brüt</div><div class="k-value sm">' + fmtMoney.format(totBrut) + '</div><div class="k-delta">' + EMPLOYEES.length + ' çalışan</div></div>' +
+      '<div class="card kpi"><div class="k-label">Toplam Net Ödeme</div><div class="k-value sm">' + fmtMoney.format(totNet) + '</div><div class="k-delta">banka transferi</div></div>' +
+      '<div class="card kpi"><div class="k-label">İşveren Maliyeti</div><div class="k-value sm">' + fmtMoney.format(totCost) + '</div><div class="k-delta">SGK işveren payı dahil</div></div>';
+    document.getElementById('pay-title').textContent = fmtMonth(m) + ' bordrosu';
+    document.getElementById('pay-body').innerHTML = EMPLOYEES.map(e => {
+      const ps = payslipOf(e);
+      return '<tr class="clickable" data-id="' + e.id + '"><td>' + empCell(e) + '</td>' +
+        '<td>' + e.bank + '</td>' +
+        '<td class="num">' + fmtMoney.format(ps.brut) + '</td>' +
+        '<td class="num" style="color:var(--crit-text)">− ' + fmtMoney.format(ps.brut - ps.net) + '</td>' +
+        '<td class="num strong">' + fmtMoney.format(ps.net) + '</td>' +
+        '<td>' + fmtDate(pDate) + '</td>' +
+        '<td>' + pill(done ? 'pill-good' : 'pill-warn', done ? 'Ödendi' : 'Bekliyor') + '</td></tr>';
+    }).join('');
+    document.getElementById('pay-foot').innerHTML =
+      '<tr><td colspan="2">Toplam</td><td class="num">' + fmtMoney.format(totBrut) + '</td><td class="num">− ' + fmtMoney.format(totBrut - totNet) + '</td><td class="num">' + fmtMoney.format(totNet) + '</td><td colspan="2"></td></tr>';
+    el.querySelectorAll('tr.clickable').forEach(tr =>
+      tr.addEventListener('click', () => openPayslip(+tr.dataset.id, m)));
+  }
+  fill();
+  el.querySelector('#pay-month').addEventListener('change', ev => { payMonthIdx = +ev.target.value; fill(); });
+}
+
+function openPayslip(id, month) {
+  const e = EMPLOYEES.find(x => x.id === id);
+  const ps = payslipOf(e);
+  const modal = document.getElementById('modal'), ov = document.getElementById('overlay');
+  modal.innerHTML =
+    '<div class="modal-head">' + avatarHtml(e) +
+      '<div><h3>Bordro Pusulası</h3><p>' + esc(e.name) + ' · ' + fmtMonth(month) + ' · Sicil ' + e.sicil + '</p></div>' +
+      '<button class="modal-close" aria-label="Kapat">×</button>' +
+    '</div>' +
+    '<h4>Kazançlar ve kesintiler</h4>' +
+    '<div class="payslip-row"><span>Brüt Ücret</span><b>' + fmtMoney.format(ps.brut) + '</b></div>' +
+    '<div class="payslip-row"><span>SGK İşçi Payı (%14)</span><b class="neg">− ' + fmtMoney.format(ps.sgk) + '</b></div>' +
+    '<div class="payslip-row"><span>İşsizlik Sigortası İşçi Payı (%1)</span><b class="neg">− ' + fmtMoney.format(ps.issizlik) + '</b></div>' +
+    '<div class="payslip-row"><span>Gelir Vergisi</span><b class="neg">− ' + fmtMoney.format(ps.gv) + '</b></div>' +
+    '<div class="payslip-row"><span>Damga Vergisi</span><b class="neg">− ' + fmtMoney.format(ps.damga) + '</b></div>' +
+    '<div class="payslip-total"><span>Net Ödenen</span><b>' + fmtMoney.format(ps.net) + '</b></div>' +
+    '<h4>Ödeme bilgisi</h4>' +
+    '<div class="payslip-row"><span>Banka</span><b>' + e.bank + '</b></div>' +
+    '<div class="payslip-row"><span>IBAN</span><b>' + e.iban + '</b></div>' +
+    '<div class="payslip-row"><span>Ödeme Tarihi</span><b>' + fmtDate(payrollDate(month)) + '</b></div>' +
+    '<h4>İşveren maliyeti</h4>' +
+    '<div class="payslip-row"><span>SGK İşveren Payı (%15,75)</span><b>' + fmtMoney.format(ps.isverenSgk) + '</b></div>' +
+    '<div class="payslip-row"><span>İşsizlik İşveren Payı (%2)</span><b>' + fmtMoney.format(ps.isverenIssizlik) + '</b></div>' +
+    '<div class="payslip-row"><span>Toplam Aylık Maliyet</span><b>' + fmtMoney.format(ps.cost) + '</b></div>' +
+    '<div class="empty-note" style="padding-bottom:0">Oranlar temsilidir; gerçek bordro hesaplaması kümülatif vergi dilimine göre değişir.</div>';
+  ov.classList.add('show');
+  modal.querySelector('.modal-close').focus();
+  modal.querySelector('.modal-close').addEventListener('click', closeModal);
+}
+
+/* =========================================================
+   GÖRÜNÜM: Sodexo
+   ========================================================= */
+let sodexoMonthIdx = 0;
+function renderSodexo() {
+  const el = document.getElementById('view-sodexo');
+  const months = monthList(6);
+  el.innerHTML =
+    '<div class="controls"><select class="ctl" id="sdx-month" aria-label="Ay seç">' +
+      months.map((m, i) => '<option value="' + i + '"' + (i === sodexoMonthIdx ? ' selected' : '') + '>' + fmtMonth(m) + '</option>').join('') +
+    '</select></div>' +
+    '<div class="kpis" id="sdx-kpis"></div>' +
+    '<div class="grid-2">' +
+      '<div class="card"><div class="card-head"><h2 id="sdx-title"></h2><span class="hint">Kart bazında yükleme</span></div>' +
+      '<div class="card-body table-wrap" style="padding-top:6px"><table>' +
+        '<thead><tr><th>Çalışan</th><th>Kart No</th><th class="num">Günlük Bedel</th><th class="num">İş Günü</th><th class="num">Tutar</th><th>Durum</th></tr></thead>' +
+        '<tbody id="sdx-body"></tbody><tfoot id="sdx-foot"></tfoot></table></div></div>' +
+      '<div class="stack">' +
+        '<div class="card"><div class="card-head"><h2>Aylık Toplam — Son 6 Ay</h2></div>' +
+        '<div class="card-body" id="sdx-chart"></div></div>' +
+        '<div class="card"><div class="card-head"><h2>Politika</h2></div>' +
+        '<div class="card-body row-list">' +
+          '<div class="row-item"><div class="r-text"><b>Günlük bedel</b><span>Tüm çalışanlar için sabit</span></div><b>260 ₺ / iş günü</b></div>' +
+          '<div class="row-item"><div class="r-text"><b>Yükleme günü</b><span>Aylık, iş günü sayısına göre</span></div><b>Her ayın 5’i</b></div>' +
+          '<div class="row-item"><div class="r-text"><b>Vergi durumu</b><span>Günlük yemek bedeli muafiyeti kapsamında</span></div>' + pill('pill-good', 'Muaf') + '</div>' +
+        '</div></div>' +
+      '</div>' +
+    '</div>';
+
+  function fill() {
+    const m = months[sodexoMonthIdx];
+    const wd = workdaysInMonth(m);
+    const depositDay = sodexoDate(m);
+    const done = TODAY >= depositDay;
+    const total = sodexoTotal(m);
+    document.getElementById('sdx-kpis').innerHTML =
+      '<div class="card kpi"><div class="k-label">Yatma Tarihi</div><div class="k-value sm">' + fmtDate(depositDay) + '</div><div class="k-delta">her ayın 5’inde yüklenir</div></div>' +
+      '<div class="card kpi"><div class="k-label">Toplam Tutar</div><div class="k-value sm">' + fmtMoney.format(total) + '</div><div class="k-delta">' + EMPLOYEES.length + ' kart</div></div>' +
+      '<div class="card kpi"><div class="k-label">İş Günü</div><div class="k-value">' + wd + '</div><div class="k-delta">' + fmtMonth(m) + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Durum</div><div class="k-value" style="font-size:18px;margin-top:8px">' + pill(done ? 'pill-good' : 'pill-warn', done ? 'Yattı' : 'Bekliyor') + '</div></div>';
+    document.getElementById('sdx-title').textContent = fmtMonth(m) + ' yüklemesi';
+    document.getElementById('sdx-body').innerHTML = EMPLOYEES.map(e =>
+      '<tr><td>' + empCell(e, e.dept) + '</td>' +
+      '<td class="mono">' + e.card + '</td>' +
+      '<td class="num">' + fmtMoney.format(e.mealDaily) + '</td>' +
+      '<td class="num">' + wd + '</td>' +
+      '<td class="num strong">' + fmtMoney.format(e.mealDaily * wd) + '</td>' +
+      '<td>' + pill(done ? 'pill-good' : 'pill-warn', done ? 'Yattı' : 'Bekliyor') + '</td></tr>').join('');
+    document.getElementById('sdx-foot').innerHTML =
+      '<tr><td colspan="4">Toplam</td><td class="num">' + fmtMoney.format(total) + '</td><td></td></tr>';
+  }
+  fill();
+
+  const chartMonths = months.slice().reverse();
+  barChart(document.getElementById('sdx-chart'),
+    chartMonths.map(m => m.toLocaleDateString('tr-TR', { month: 'short' })),
+    chartMonths.map(sodexoTotal),
+    v => Math.round(v / 1000) + ' bin ₺',
+    i => '<div class="tt-title">' + fmtMonth(chartMonths[i]) + '</div>' +
+         '<div class="tt-row"><span>Toplam yükleme</span><b>' + fmtMoney.format(sodexoTotal(chartMonths[i])) + '</b></div>' +
+         '<div class="tt-row"><span>Yatma tarihi</span><b>' + fmtDateShort(sodexoDate(chartMonths[i])) + '</b></div>');
+
+  el.querySelector('#sdx-month').addEventListener('change', ev => { sodexoMonthIdx = +ev.target.value; fill(); });
+}
+
+/* =========================================================
+   GÖRÜNÜM: Masraflar
+   ========================================================= */
+let expFilter = 'Tümü';
+function renderExpenses() {
+  const el = document.getElementById('view-expenses');
+  const thisMonthExp = EXPENSES.filter(x => x.date.getMonth() === TODAY.getMonth() && x.status !== 'Reddedildi');
+  const monthTotal = thisMonthExp.reduce((s, x) => s + x.amount, 0);
+  const pendingList = EXPENSES.filter(x => x.status === 'Bekliyor');
+  const pendingTotal = pendingList.reduce((s, x) => s + x.amount, 0);
+  const paidTotal = EXPENSES.filter(x => x.status === 'Ödendi').reduce((s, x) => s + x.amount, 0);
+
+  el.innerHTML =
+    '<div class="controls"><div class="chips" id="ex-chips">' +
+      ['Tümü', 'Bekliyor', 'Onaylandı', 'Ödendi', 'Reddedildi'].map(s =>
+        '<button class="chip' + (s === expFilter ? ' active' : '') + '" data-f="' + s + '">' + s + '</button>').join('') +
+    '</div></div>' +
+    '<div class="kpis">' +
+      '<div class="card kpi"><div class="k-label">Bu Ay Toplam</div><div class="k-value sm">' + fmtMoney.format(monthTotal) + '</div><div class="k-delta">' + thisMonthExp.length + ' talep (red hariç)</div></div>' +
+      '<div class="card kpi"><div class="k-label">Onay Bekleyen</div><div class="k-value sm">' + fmtMoney.format(pendingTotal) + '</div><div class="k-delta">' + pendingList.length + ' talep</div></div>' +
+      '<div class="card kpi"><div class="k-label">Ödenen (60 gün)</div><div class="k-value sm">' + fmtMoney.format(paidTotal) + '</div></div>' +
+      '<div class="card kpi"><div class="k-label">Ortalama Talep</div><div class="k-value sm">' + fmtMoney.format(Math.round(EXPENSES.reduce((s, x) => s + x.amount, 0) / EXPENSES.length)) + '</div></div>' +
+    '</div>' +
+    '<div class="card"><div class="card-head"><h2>Masraf Talepleri</h2><span class="hint" id="ex-count"></span></div>' +
+    '<div class="card-body table-wrap" style="padding-top:6px"><table class="wide">' +
+      '<thead><tr><th>Çalışan</th><th>Kategori</th><th>Açıklama</th><th>Fiş No</th><th>Tarih</th><th class="num">Tutar</th><th>Durum</th><th></th></tr></thead>' +
+      '<tbody id="ex-body"></tbody></table></div></div>';
+
+  function fill() {
+    const rows = EXPENSES.filter(x => expFilter === 'Tümü' || x.status === expFilter);
+    document.getElementById('ex-count').textContent = rows.length + ' kayıt';
+    document.getElementById('ex-body').innerHTML = rows.length ? rows.map(x =>
+      '<tr><td>' + empCell(x.emp, x.emp.dept) + '</td>' +
+      '<td>' + x.cat + '</td>' +
+      '<td style="color:var(--ink-2)">' + x.desc + '</td>' +
+      '<td class="mono">' + x.receipt + '</td>' +
+      '<td>' + fmtDateShort(x.date) + '</td>' +
+      '<td class="num strong">' + fmtMoney.format(x.amount) + '</td>' +
+      '<td>' + pill(EXP_PILL[x.status], x.status) + '</td>' +
+      '<td>' + (x.status === 'Bekliyor'
+        ? '<span style="display:inline-flex;gap:6px"><button class="btn btn-approve" data-act="Onaylandı" data-id="' + x.id + '">Onayla</button>' +
+          '<button class="btn btn-reject" data-act="Reddedildi" data-id="' + x.id + '">Reddet</button></span>'
+        : '') + '</td></tr>').join('')
+      : '<tr><td colspan="8" class="empty-note" style="white-space:normal">Bu filtrede kayıt yok.</td></tr>';
+    el.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+      const x = EXPENSES.find(y => y.id === +b.dataset.id);
+      x.status = b.dataset.act;
+      toast(x.emp.name + ' — masraf talebi ' + (x.status === 'Onaylandı' ? 'onaylandı ✓' : 'reddedildi'));
+      updateBadges();
+      renderExpenses();
+    }));
+  }
+  fill();
+  el.querySelectorAll('#ex-chips .chip').forEach(ch => ch.addEventListener('click', () => {
+    expFilter = ch.dataset.f;
+    el.querySelectorAll('#ex-chips .chip').forEach(c => c.classList.toggle('active', c === ch));
+    fill();
+  }));
+}
+
+/* =========================================================
+   Navigasyon
+   ========================================================= */
+const VIEWS = {
+  dashboard: { title: 'Genel Bakış', sub: 'Şirket genelinde bugünün özeti', render: renderDashboard, always: true },
+  employees: { title: 'Çalışanlar', sub: EMPLOYEES.length + ' aktif çalışan · profil için satıra tıklayın', render: renderEmployees },
+  pdks:      { title: 'Giriş – Çıkış', sub: 'PDKS kart okuyucu kayıtları ve fazla mesai', render: renderPdks },
+  leaves:    { title: 'İzin Yönetimi', sub: 'Talepler, bakiyeler ve resmi tatil takvimi', render: renderLeaves, always: true },
+  assets:    { title: 'Zimmet Takibi', sub: 'Demirbaş envanteri ve zimmet durumları', render: renderAssets },
+  perf:      { title: 'Performans', sub: '2026 H1 değerlendirme dönemi sonuçları', render: renderPerf },
+  payroll:   { title: 'Bordro', sub: 'Brüt–net hesaplar, kesintiler ve ödeme durumu', render: renderPayroll },
+  sodexo:    { title: 'Sodexo Yemek Kartı', sub: 'Aylık yükleme takvimi ve tutarlar', render: renderSodexo },
+  expenses:  { title: 'Masraf Yönetimi', sub: 'Harcama talepleri ve onay süreci', render: renderExpenses, always: true },
+};
+const rendered = {};
+function switchView(name) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  document.getElementById('page-title').textContent = VIEWS[name].title;
+  document.getElementById('page-sub').textContent = VIEWS[name].sub;
+  if (VIEWS[name].always || !rendered[name]) { VIEWS[name].render(); rendered[name] = true; }
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
+
+document.getElementById('today-chip').textContent =
+  TODAY.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' });
+
+updateBadges();
+switchView('dashboard');
+</script>
