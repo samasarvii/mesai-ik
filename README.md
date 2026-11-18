@@ -25,3 +25,20 @@ Tek bir `index.html` dosyasından oluşur — framework yok, build adımı yok. 
 - Grafikler el yazımı SVG; harici kütüphane yok.
 
 > ⚠️ Tüm kişiler, tutarlar ve kayıtlar örnektir. Poyraz Yazılım A.Ş. kurgusal bir şirkettir.
+
+## Proje fikirleri
+
+### ☁️ Ajanları bulutta çalıştırmak
+
+> Kaynak: [@pikacodes Instagram reel'i](https://www.instagram.com/reel/Df3RRxyPQiR/) (17 Kasım 2026) — *"Close your laptop and protect your aura: start running your agents on the cloud"*. Videoda Codex ile anlatılıyor; aynı yaklaşım Claude Code'un bulut oturumlarıyla da uygulanabilir.
+
+**Fikir:** Mesai İK'nın geliştirmesini yerel bilgisayara bağlı olmadan, bulutta çalışan kodlama ajanlarına devretmek. Laptop kapalıyken de iş ilerler.
+
+Olası kullanımlar:
+
+- **Issue → PR akışı:** GitHub'a açılan bir issue'yu (ör. "Masraflar modülüne fiş görseli ekle") bulut ajanına verip PR olarak geri almak.
+- **Paralel modül geliştirme:** Her modül (Bordro, İzinler, Zimmet…) için ayrı bir bulut oturumu açıp aynı anda ilerletmek.
+- **Zamanlanmış görevler:** Haftalık olarak bağımlılık/erişilebilirlik kontrolü, 2027 resmi tatil takvimi ve bordro parametrelerinin (asgari ücret, vergi dilimleri) güncellenmesi.
+- **PR takibi:** Ajanın PR'daki yorumları ve GitHub Pages kontrollerini izleyip düzeltmeleri kendisinin göndermesi.
+
+**Dikkat edilecekler:** Ajanlar yalnızca kendi dallarında çalışmalı; birleştirme (merge) kararı insanda kalmalı. Proje dummy veriyle çalıştığı için gerçek kişisel veri riski yok, ama ileride gerçek İK verisi eklenirse bulut ortamına sır/veri verilmemeli.
