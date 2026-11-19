@@ -1,0 +1,141 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@600;700&display=swap">
+<style>
+  :root{
+    --navy:#1d4f9c; --navy-strong:#163c77; --soft:#dde7f7; --orange:#eb6834;
+    --yellow:#fab219; --ink:#151b26; --green:#1baf7a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--navy)}
+  #stage{position:absolute;inset:0;transform-origin:50% 45%}
+  .bg{position:absolute;inset:-60px;
+    background:repeating-linear-gradient(90deg,var(--navy) 0 58px,var(--soft) 58px 104px,var(--navy-strong) 104px 112px,var(--soft) 112px 120px)}
+  .grain{position:absolute;inset:0;opacity:.18;mix-blend-mode:multiply}
+  .abs{position:absolute;will-change:transform}
+
+  /* sticker title text: white outline layer behind fill layer */
+  .tt{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.035em;line-height:1;white-space:nowrap;
+      filter:drop-shadow(0 10px 0 rgba(22,60,119,.55)) drop-shadow(0 18px 24px rgba(0,0,0,.25))}
+  .tt span{display:block}
+  .tt .o{position:absolute;left:0;top:0;color:#fff;-webkit-text-stroke:30px #fff}
+  .tt .f{position:relative}
+
+  #card{left:140px;top:500px;width:800px;transform-origin:50% 20%}
+  #card .frame{background:#fff;padding:18px;border-radius:52px;
+     box-shadow:0 0 0 6px rgba(255,255,255,.35),0 30px 60px rgba(10,25,60,.45)}
+  #card img{display:block;width:100%;border-radius:36px}
+
+  #label{left:150px;top:1085px;transform-origin:0 50%}
+  #label .bar{height:104px;background:var(--yellow);border-radius:10px;overflow:hidden;
+     box-shadow:0 0 0 10px #fff,0 16px 30px rgba(0,0,0,.28);display:flex;align-items:center;padding:0 34px}
+  #label .txt{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:70px;color:var(--navy-strong);letter-spacing:-.03em;white-space:nowrap}
+  #label .caret{display:inline-block;width:7px;height:62px;background:var(--navy-strong);margin-left:6px;vertical-align:-6px}
+
+  #logo{left:670px;top:1190px;width:236px;height:236px;transform-origin:50% 50%}
+  #logo .tile{width:100%;height:100%;border-radius:62px;background:var(--navy);display:grid;place-items:center;
+     box-shadow:0 0 0 18px #fff,0 26px 40px rgba(0,0,0,.35)}
+
+  .chip{left:96px;transform-origin:0 50%;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:46px;color:var(--ink);
+     background:#fff;border-radius:999px;padding:20px 38px 20px 26px;display:flex;align-items:center;gap:18px;
+     box-shadow:0 0 0 7px rgba(255,255,255,.55),0 16px 28px rgba(0,0,0,.28);white-space:nowrap}
+  .chip i{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+
+  .star{transform-origin:50% 50%}
+  #clip{left:800px;top:440px;transform-origin:50% 100%}
+</style></head>
+<body>
+<div id="stage">
+  <div class="bg"></div>
+  <svg class="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .9 0"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+  <!-- product cut-out -->
+  <div id="card" class="abs"><div class="frame"><img src="app-mobile.png" alt=""></div></div>
+
+  <!-- paperclip -->
+  <svg id="clip" class="abs" width="90" height="190" viewBox="0 0 90 190"><path d="M60 150V40a22 22 0 0 0-44 0v120a30 30 0 0 0 60 0V60" fill="none" stroke="#c9d2e0" stroke-width="11" stroke-linecap="round"/><path d="M60 150V40a22 22 0 0 0-44 0v120a30 30 0 0 0 60 0V60" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8" transform="translate(-2 -2)"/></svg>
+
+  <!-- title -->
+  <div id="t1" class="abs tt" style="left:90px;top:110px;font-size:190px;transform-origin:30% 60%">
+    <span class="o">Mesai'ye</span><span class="f" style="color:var(--navy)">Mesai'ye</span></div>
+  <div id="t2" class="abs tt" style="left:300px;top:300px;font-size:150px;transform-origin:40% 60%">
+    <span class="o">hoş geldin!</span><span class="f" style="color:var(--orange)">hoş geldin!</span></div>
+
+  <!-- label -->
+  <div id="label" class="abs"><div class="bar"><span class="txt"><span id="typed"></span><span class="caret" id="caret"></span></span></div></div>
+
+  <!-- logo sticker -->
+  <div id="logo" class="abs"><div class="tile">
+    <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><g id="hand"><path d="M12 7v5l3.2 2"/></g></svg>
+  </div></div>
+
+  <!-- feature chips -->
+  <div id="c1" class="abs chip" style="top:1260px"><i style="background:#e7eefb"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1d4f9c" stroke-width="2.6" stroke-linecap="round"><path d="M4 12h11M11 7l5 5-5 5M20 4v16"/></svg></i>Giriş – Çıkış</div>
+  <div id="c2" class="abs chip" style="top:1372px"><i style="background:#fde9e0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#eb6834" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></i>İzinler</div>
+  <div id="c3" class="abs chip" style="top:1484px"><i style="background:#ddf4ea"><span style="font-size:36px;color:#127a55;font-weight:700">₺</span></i>Bordro</div>
+
+  <!-- sparkles -->
+  <svg id="s1" class="abs star" style="left:900px;top:140px" width="90" height="90" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fff"/></svg>
+  <svg id="s2" class="abs star" style="left:150px;top:330px" width="80" height="80" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fab219"/></svg>
+  <svg id="s3" class="abs star" style="left:930px;top:400px" width="60" height="60" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fab219"/></svg>
+  <svg id="s4" class="abs star" style="left:770px;top:1040px" width="60" height="60" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fab219"/></svg>
+  <svg id="s5" class="abs star" style="left:110px;top:1200px" width="54" height="54" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fff"/></svg>
+  <svg id="s6" class="abs star" style="left:930px;top:1110px" width="50" height="50" viewBox="-1 -1 2 2"><path d="M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z" fill="#fff"/></svg>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const backOut = x => { const c1=2.2,c3=c1+1; return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2); };
+const easeOut = x => 1-Math.pow(1-x,3);
+// pop: 0 -> overshoot -> 1 over dur seconds starting at t0
+const pop = (t,t0,dur=.38)=> t<t0?0: backOut(clamp((t-t0)/dur));
+const set = (el,{x=0,y=0,s=1,r=0,o=1})=>{ el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`; el.style.opacity=o; };
+
+const LABEL = 'Benim adım Mesai';
+const TYPE_START = 1.55, TYPE_CPS = 15;   // chars per second
+window.TIMELINE = { pops:[0.0,0.55,0.9,1.3,2.85,3.5,3.7,3.9], typeStart:TYPE_START, typeChars:LABEL.length, cps:TYPE_CPS, duration:6.0 };
+
+window.render = function(t){
+  // gentle push-in for the whole scene
+  $('stage').style.transform = `scale(${1+0.035*easeOut(clamp(t/6))})`;
+
+  // card: small settle at start
+  const cs = 0.94 + 0.06*backOut(clamp(t/0.45));
+  set($('card'),{s:cs, r:-2.5 + 0.6*Math.sin(t*1.6)});
+  set($("clip"),{s:pop(t,0.9,.3), r:10});
+
+  // title words
+  const p1 = pop(t,0.0,.42), p2 = pop(t,0.55,.42);
+  set($('t1'),{s:p1, r:-4 + 1.2*Math.sin(t*2.2), o:p1>0?1:0});
+  set($('t2'),{s:p2, r:-7 + 1.2*Math.sin(t*2.2+1), o:p2>0?1:0});
+
+  // label: bar wipes in, then typewriter
+  const lb = $('label'); const bp = pop(t,1.3,.3);
+  set(lb,{s:bp, r:-3, o:bp>0?1:0});
+  const n = Math.floor(clamp((t-TYPE_START)*TYPE_CPS,0,LABEL.length));
+  $('typed').textContent = LABEL.slice(0,n);
+  $('caret').style.opacity = (n<LABEL.length || Math.floor(t*2.5)%2===0) && t>1.4 ? 1 : 0;
+
+  // logo sticker + spinning clock hand
+  const lp = pop(t,2.85,.45);
+  set($('logo'),{s:lp, r:10 + 3*Math.sin((t-2.85)*3), o:lp>0?1:0});
+  const spin = t<2.85?0: 360*easeOut(clamp((t-2.85)/1.1));
+  $('hand').setAttribute('transform',`rotate(${spin} 12 12)`);
+
+  // chips
+  [['c1',3.5,-4],['c2',3.7,3],['c3',3.9,-2]].forEach(([id,t0,r],i)=>{
+    const p = pop(t,t0,.36);
+    set($(id),{s:p, r:r + 1.5*Math.sin(t*2+i), o:p>0?1:0});
+  });
+
+  // sparkles: pop in then twinkle
+  [['s1',0.35],['s2',0.75],['s3',1.0],['s4',1.65],['s5',3.6],['s6',2.95]].forEach(([id,t0],i)=>{
+    const p = pop(t,t0,.35);
+    const tw = 0.82 + 0.18*Math.sin(t*6+i*1.7);
+    set($(id),{s:p*tw, r:(t-t0)*40, o:p>0?1:0});
+  });
+};
+render(0);
+</script>
+</body></html>
